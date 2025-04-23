@@ -1,0 +1,57 @@
+/* Full-width container for background and border */
+.navbar__container {
+    width: 100%;
+    background-color: rgb(87, 108, 191);
+    border-bottom: 1px solid #dbdbdb;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+}
+
+/* Inner content with max-width and margin */
+.navbar__content {
+    margin-left: 50px;
+    height: 54px;
+    padding: 0 20px;
+}
+
+.navbar_logo {
+    margin-top: 10px;
+    margin-right: 370px;
+    border-radius: 5px;
+}
+
+.navbar__img {
+    margin: 15px 10px;
+    cursor: pointer;
+}
+
+.navbar__searchBar {
+    height: 30px;
+    width: 215px;
+    margin-top: 10px;
+    border: 1px solid #dbdbdb;
+    text-align: center;
+    background-color: #fafafa;
+    border-radius: 5px;
+}
+
+.navbar__logout {
+    background: #ff4b4b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin-left: 420px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background 0.3s ease;
+    height: 30px;
+    align-self: center;
+}
+
+.navbar__logout:hover {
+    background: #ff3030;
+}
