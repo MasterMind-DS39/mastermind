@@ -63,7 +63,8 @@ class MainPage extends Component {
                         key={item.postId}
                         id={item.postId}
                         userName={item.userName}
-                        postImage={item.postPath}
+                        postImages={item.imagePaths}
+                        postVideos={item.videoPaths}
                         likes={item.likeCount}
                         caption={item.caption}
                         hashtags={item.hashtags}
@@ -71,7 +72,10 @@ class MainPage extends Component {
                 ))}
 
                 {this.state.showModal && 
-                    <CreatePostModal onClose={this.handleModalClose} />
+                    <CreatePostModal 
+                        onClose={this.handleModalClose} 
+                        userData={JSON.parse(localStorage.getItem("users"))}
+                    />
                 }
             </div>
         );

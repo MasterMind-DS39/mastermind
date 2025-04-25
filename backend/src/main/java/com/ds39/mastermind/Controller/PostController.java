@@ -18,16 +18,16 @@ import com.ds39.mastermind.Service.PostService;
 @RequestMapping("/post")
 public class PostController {
 
-	@Autowired
-	PostService postService;
-	
-	@PostMapping("")
-	private Post submitUserPost(@RequestBody Post post) {
-		return postService.submitPostToDataBase(post);
-	}
-	
-	@GetMapping("")
-	private ArrayList<Post> getAllPost(){
-		return postService.retrivePostFromDB();
-	}
+    @Autowired
+    PostService postService;
+    
+    @PostMapping("")
+    private Post submitUserPost(@RequestBody Post post) {
+        return postService.submitPostToDataBase(post);
+    }
+    
+    @GetMapping("")
+    private ArrayList<Post> getAllPost(){
+        return postService.retrivePostFromDB();
+    }
 }

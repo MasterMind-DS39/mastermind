@@ -1,11 +1,16 @@
 package com.ds39.mastermind.Entity;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.JoinColumn;
 
 @Entity(name="Post")
 public class Post {
@@ -17,7 +22,17 @@ public class Post {
     private String postId;
     private String userId;
     private String userName;
-    private String postPath;
+    
+    @ElementCollection
+    @CollectionTable(name = "post_images", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "image_path")
+    private List<String> imagePaths = new ArrayList<>();
+    
+    @ElementCollection
+    @CollectionTable(name = "post_videos", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "video_path")
+    private List<String> videoPaths = new ArrayList<>();
+    
     private Timestamp timeStamp;
     private int likeCount;
     
@@ -30,12 +45,13 @@ public class Post {
         super();
     }
     
-    public Post(int id, String postId, String userId, String postPath, Timestamp timeStamp, int likeCount, String caption, String hashtags) {
+    public Post(int id, String postId, String userId, List<String> imagePaths, List<String> videoPaths, Timestamp timeStamp, int likeCount, String caption, String hashtags) {
         super();
         Id = id;
         this.postId = postId;
         this.userId = userId;
-        this.postPath = postPath;
+        this.imagePaths = imagePaths;
+        this.videoPaths = videoPaths;
         this.timeStamp = timeStamp;
         this.likeCount = likeCount;
         this.caption = caption;
@@ -90,12 +106,20 @@ public class Post {
         this.userId = userId;
     }
     
-    public String getPostPath() {
-        return postPath;
+    public List<String> getImagePaths() {
+        return imagePaths;
     }
     
-    public void setPostPath(String postPath) {
-        this.postPath = postPath;
+    public void setImagePaths(List<String> imagePaths) {
+        this.imagePaths = imagePaths;
+    }
+    
+    public List<String> getVideoPaths() {
+        return videoPaths;
+    }
+    
+    public void setVideoPaths(List<String> videoPaths) {
+        this.videoPaths = videoPaths;
     }
     
     public Timestamp getTimeStamp() {
