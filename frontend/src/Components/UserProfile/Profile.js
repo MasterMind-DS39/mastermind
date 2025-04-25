@@ -140,7 +140,7 @@ class Profile extends Component {
                             </div>
                         </div>
                     </div>
-                    
+                    <hr className="profile__separator" />
                     <div className="profile__content">
                         <div className="profile__posts">
                             <h3 className="profile__section-title">Posts</h3>

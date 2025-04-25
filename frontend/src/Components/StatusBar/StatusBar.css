@@ -1,31 +1,185 @@
-.statusbar__container {
-    height: 120px;
-    width: 615px;
-    background-color: white;
-    border: 1px solid #dbdddb;
-    border-radius: 15px;
+.statusbar__container-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 935px;
     margin-top: 25px;
-    display: flex;
-    overflow-x: scroll;
 }
+
+.statusbar__container {
+    height: 200px;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    overflow-x: auto;
+    padding: 8px 4px;
+    gap: 8px;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    border-radius: 10px;
+}
+
 .statusbar__container::-webkit-scrollbar {
+    display: none;
+  }
+
+.status {
+    position: relative;
+    min-width: 118px;
+    height: 200px;
+    border-radius: 13px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status:hover {
+    transform: translateY(-4px);
+}
+
+.status-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 12px;
+}
+
+.status-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.status-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+    z-index: 2;
+}
+
+.status-user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 3;
+  }
+  
+
+  .statusbar__status {
+    width: 36px !important;
+    height: 36px !important;
+    border: 3px solid #1877F2;
+    margin-bottom: 4px;
+    z-index: 3;
+  }
+  
+
+  .statusbar__text {
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+    z-index: 3;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    margin-top: 115px;
+  }
+  
+  .status-overlay-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
+    z-index: 2;
+  }
+  
+
+.create-story {
+    background-color: white;
+    border: 1px solid #dbdbdb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-story-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.create-story-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #1877F2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.create-story-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1c1e21;
+}
+
+input[type="file"] {
     display: none;
 }
 
-.statusbar__status {
-    min-width: 55px;
-    min-height: 55px;
-    border: 3px solid #DF3968;
+.nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
 }
-.status {
-    margin: 25px 10px;
+
+.nav-button:hover {
+    background-color: #f0f2f5;
 }
-.statusbar__text {
-    font-size: 12px;
-    max-width: 60px;
-    overflow-x: hidden;
-    text-align: center;
+
+.nav-button-left {
+    left: 10px;
 }
-.statusbar__upload {
-    margin: 30px 20px 30px 30px;
+
+.nav-button-right {
+    right: 10px;
+}
+
+.nav-button svg {
+    font-size: 18px;
+    color: #65676b;
 }

@@ -5,17 +5,61 @@ import statusimg from "../../images/pp1.png";
 import uploadimage from "../../images/statusadd.png";
 import { storage, auth } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import AddIcon from '@mui/icons-material/Add';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 class StatusBar extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            statusList: []
+        this.state = {
+            statusList: [],
+            showLeftNav: false,
+            showRightNav: true
         }
+        this.statusBarRef = React.createRef();
     }
 
     componentDidMount() {
         this.getData();
+        this.checkNavigation();
+        window.addEventListener('resize', this.checkNavigation);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.checkNavigation);
+    }
+
+    checkNavigation = () => {
+        if (this.statusBarRef.current) {
+            const container = this.statusBarRef.current;
+            this.setState({
+                showLeftNav: container.scrollLeft > 0,
+                showRightNav: container.scrollLeft < (container.scrollWidth - container.clientWidth)
+            });
+        }
+    }
+
+    handleScroll = () => {
+        this.checkNavigation();
+    }
+
+    scrollLeft = () => {
+        if (this.statusBarRef.current) {
+            this.statusBarRef.current.scrollBy({
+                left: -300,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    scrollRight = () => {
+        if (this.statusBarRef.current) {
+            this.statusBarRef.current.scrollBy({
+                left: 300,
+                behavior: 'smooth'
+            });
+        }
     }
 
     getData = () => {
@@ -23,21 +67,21 @@ class StatusBar extends Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({ statusList: data });
+                setTimeout(this.checkNavigation, 100);
             });
-    }   
+    }
 
     uploadStatus = (event) => {
         const image = event.target.files[0];
         const thisContext = this;
-        
         if (!image) return;
-
+        
         // Create a reference to 'status/[imageName]'
         const storageRef = ref(storage, `status/${image.name}`);
         
         // Upload the file
         const uploadTask = uploadBytesResumable(storageRef, image);
-
+        
         uploadTask.on(
             "state_changed",
             (snapshot) => {
@@ -51,20 +95,19 @@ class StatusBar extends Component {
                 getDownloadURL(uploadTask.snapshot.ref)
                     .then((downloadURL) => {
                         console.log("Status available at:", downloadURL);
-
                         let payload = {
                             statusId: Math.floor(Math.random() * 100000).toString(),
                             userId: JSON.parse(localStorage.getItem("users")).uid,
                             path: downloadURL,
                             timeStamp: new Date().getTime()
-                        };
-
+                        }
+                        
                         const requestOptions = {
                             method: "POST",
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload),
                         };
-
+                        
                         fetch("http://localhost:8080/status", requestOptions)
                             .then(response => response.json())
                             .then(data => {
@@ -81,37 +124,64 @@ class StatusBar extends Component {
         );
     }
 
-    render() { 
-        return ( 
-            <div>
-                <div className="statusbar__container">
-                    <div className="fileupload">
-                        <label htmlFor="file-upload-status">
-                            <img 
-                                className="statusbar__upload" 
-                                src={uploadimage} 
-                                width="55px" 
-                                height="55px" 
-                                alt="Upload status" 
+    render() {
+        return (
+            <div className="statusbar__container-wrapper">
+                {this.state.showLeftNav && (
+                    <button className="nav-button nav-button-left" onClick={this.scrollLeft}>
+                        <ArrowBackIosNewIcon />
+                    </button>
+                )}
+                
+                <div 
+                    className="statusbar__container" 
+                    ref={this.statusBarRef}
+                    onScroll={this.handleScroll}
+                >
+                    <div className="status create-story">
+                        <label htmlFor="status-upload" className="create-story-button">
+                            <div className="create-story-icon">
+                                <AddIcon />
+                            </div>
+                            <span className="create-story-text">Create story</span>
+                            <input 
+                                id="status-upload" 
+                                type="file" 
+                                onChange={this.uploadStatus} 
+                                accept="image/*"
                             />
                         </label>
-                        <input 
-                            id="file-upload-status" 
-                            onChange={this.uploadStatus} 
-                            type="file"
-                            accept="image/*"
-                        />
                     </div>
-                    {this.state.statusList.map((item) => (
-                        <div className="status" key={item.statusId}>
-                            <Avatar className="statusbar__status" src={item.path} />
-                            <div className="statusbar__text">{item.userName}</div>
+                    
+                    {this.state.statusList.map((status, index) => (
+                        <div className="status" key={status.statusId}>
+                            <div className="status-card">
+                                <img 
+                                    src={status.path} 
+                                    className="status-background" 
+                                    alt="status"
+                                />
+                                <div className="status-overlay"></div>
+                                <div className="status-user-info">
+                                    <Avatar 
+                                        className="statusbar__status" 
+                                        src={statusimg} 
+                                    />
+                                    <div className="statusbar__text">{status.userName || `User ${index + 1}`}</div>
+                                </div>
+                            </div>
                         </div>
                     ))}
                 </div>
+                
+                {this.state.showRightNav && (
+                    <button className="nav-button nav-button-right" onClick={this.scrollRight}>
+                        <ArrowForwardIosIcon />
+                    </button>
+                )}
             </div>
         );
     }
 }
- 
+
 export default StatusBar;
