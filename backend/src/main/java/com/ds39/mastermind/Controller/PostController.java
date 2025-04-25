@@ -55,4 +55,10 @@ public class PostController {
     private Post updatePost(@RequestBody Post post) {
         return postService.updatePost(post);
     }
+    
+    // Add endpoint for pinning/unpinning posts
+    @PutMapping("/pin/{postId}/{userId}")
+    private Post togglePinPost(@PathVariable("postId") String postId, @PathVariable("userId") String userId) {
+        return postService.togglePinPost(postId, userId);
+    }
 }

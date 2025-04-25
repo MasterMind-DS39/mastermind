@@ -176,3 +176,22 @@
 .post__header-with-options {
     position: relative;
 }
+
+.post__pinned-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #f0f2f5;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1877f2;
+    margin-bottom: 8px;
+    width: fit-content;
+  }
+  
+  .pinned-icon {
+    font-size: 16px;
+  }
+  

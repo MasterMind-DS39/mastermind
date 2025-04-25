@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import './KebabMenu.css';
 
-function KebabMenu({ onEdit, onDelete, onPin, canPin = true }) {
+function KebabMenu({ onEdit, onDelete, onPin, canPin = true, isPinned = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -57,7 +57,8 @@ function KebabMenu({ onEdit, onDelete, onPin, canPin = true }) {
           {canPin && (
             <button className="menu-item" onClick={handlePin}>
               <PushPinIcon className="menu-icon" />
-              <span>Pin post</span>
+              <span>{isPinned ? "Unpin post" : "Pin post"}</span>
+              {isPinned && <small>This post is currently pinned to the top of your profile</small>}
             </button>
           )}
           <button className="menu-item" onClick={handleEdit}>

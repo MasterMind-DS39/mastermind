@@ -64,24 +64,44 @@ class Profile extends Component {
         });
     }
 
-    handleDeletePost = (post) => {
-        this.setState({
-            showDeleteModal: true,
-            selectedPost: post
-        });
-    }
-    
     handlePinPost = (post) => {
-        // Implement pin post functionality here
-        alert("Pin post feature coming soon!");
-    }
-
+        const userData = JSON.parse(localStorage.getItem("users"));
+        if (userData && userData.uid) {
+          fetch(`http://localhost:8080/post/pin/${post.postId}/${userData.uid}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+          .then(response => {
+            if (response.ok) {
+              // Refresh posts after pinning/unpinning
+              this.fetchUserPosts();
+            } else {
+              console.error("Error pinning/unpinning post");
+            }
+          })
+          .catch(error => {
+            console.error("Error:", error);
+          });
+        }
+      }
+    
+      
     handleCloseEditModal = (refreshNeeded) => {
         this.setState({ showEditModal: false });
         if (refreshNeeded) {
             this.fetchUserPosts();
         }
     }
+
+    handleDeletePost = (post) => {
+        this.setState({
+          showDeleteModal: true,
+          selectedPost: post
+        });
+      }
+      
 
     handleCloseDeleteModal = (deleted) => {
         this.setState({ showDeleteModal: false });
@@ -133,6 +153,12 @@ class Profile extends Component {
                                 posts.map((post) => (
                                     <div key={post.postId} className="profile__post-container">
                                         <div className="post__header-with-options">
+                                        {post.pinned && (
+                                            <div className="post__pinned-indicator">
+                                            <span className="pinned-icon">📌</span>
+                                            <span>Pinned Post</span>
+                                            </div>
+                                        )}
                                             <Post
                                                 id={post.postId}
                                                 userName={post.userName}
@@ -150,6 +176,7 @@ class Profile extends Component {
                                                         onEdit={() => this.handleEditPost(post)}
                                                         onDelete={() => this.handleDeletePost(post)}
                                                         onPin={() => this.handlePinPost(post)}
+                                                        isPinned={post.pinned}
                                                     />
                                                 </div>
                                             )}
