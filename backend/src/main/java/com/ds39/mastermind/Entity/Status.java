@@ -18,17 +18,19 @@ public class Status {
 	private String path;
 	private String userName;
 	private Timestamp timeStamp;
+	private String mediaType; // "image" or "video"
 	public Status() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Status(int id, String statusId, String userId, String path, Timestamp timeStamp) {
+	public Status(int id, String statusId, String userId, String path, Timestamp timeStamp, String mediaType) {
 		super();
 		this.id = id;
 		this.statusId = statusId;
 		this.userId = userId;
 		this.path = path;
 		this.timeStamp = timeStamp;
+		this.mediaType = mediaType;
 	}
 	public String getUserName() {
 		return userName;
@@ -65,5 +67,13 @@ public class Status {
 	}
 	public void setTimeStamp(Timestamp timeStamp) {
 		this.timeStamp = timeStamp;
-	}	
+	}
+	
+	public String getMediaType() {
+		return mediaType;
+	}
+	  
+	public void setMediaType(String mediaType) {
+		this.mediaType = mediaType;
+	}
 }
