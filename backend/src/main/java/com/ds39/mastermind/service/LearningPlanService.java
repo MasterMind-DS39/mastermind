@@ -1,6 +1,8 @@
 package com.ds39.mastermind.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.ds39.mastermind.entity.LearningPlan;
 import com.ds39.mastermind.entity.Lesson;
@@ -64,11 +66,19 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
     public void deleteLearningPlan() {
         // Logic to delete a learning plan
 
-        
+
     }
 
     public LearningPlan getLearningPlan(Long planId) {
         return planRepository.findById(planId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Learning plan not found with ID: " + planId));
+    }
+
+
+    public LearningPlan deleteLearningPlan(long planId) {
+        LearningPlan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new RuntimeException("Learning plan not found with ID: " + planId));
+        planRepository.delete(plan);
+        return plan;
     }
 }
