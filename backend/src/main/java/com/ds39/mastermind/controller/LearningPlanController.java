@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ds39.mastermind.entity.LearningPlan;
-import com.ds39.mastermind.service.LearningPlanService;
+import com.ds39.mastermind.entity.*;
+import com.ds39.mastermind.service.*;
 
 
 @RestController
@@ -23,7 +23,7 @@ public class LearningPlanController {
     }
 
 
-    @PostMapping("/{planID}")
+    @PostMapping("/{userID}")
     public LearningPlan createPlan(@PathVariable Long userID , @RequestBody LearningPlan plan) {
         // Call the service to create a learning plan
         return planService.createLearningPlan(userID, plan);
