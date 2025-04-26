@@ -1,5 +1,7 @@
 package com.ds39.mastermind.service;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -63,15 +65,16 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
     return planRepository.save(existingPlan);
 }
 
-    public void deleteLearningPlan() {
-        // Logic to delete a learning plan
 
-
-    }
 
     public LearningPlan getLearningPlan(Long planId) {
         return planRepository.findById(planId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Learning plan not found with ID: " + planId));
+    }
+
+    //getLearningPlanByUserId
+    public List<LearningPlan> getAllLearningPlansByUserId(Long userId) {
+        return planRepository.findByCreatedByUserId(userId);
     }
 
 
@@ -81,4 +84,21 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
         planRepository.delete(plan);
         return plan;
     }
+
+    //getallLearningPlans
+    public List<LearningPlan> getAllLearningPlans() {
+        return planRepository.findAll();
+    }
+
+    //upvoteLearningPlan
+    public LearningPlan upvoteLearningPlan(Long planId) {
+        LearningPlan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new RuntimeException("Learning plan not found with ID: " + planId));
+        plan.setUpvotes(plan.getUpvotes() + 1);
+        return planRepository.save(plan);
+    }
+
+    //
+
+
 }

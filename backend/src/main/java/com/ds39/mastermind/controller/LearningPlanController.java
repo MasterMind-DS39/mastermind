@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.ds39.mastermind.entity.*;
 import com.ds39.mastermind.service.*;
+import java.util.List;
 
 
 @RestController
@@ -52,9 +53,23 @@ public class LearningPlanController {
         planService.deleteLearningPlan(planID);
     }
 
-    
+    //getAllLearningPlans
+    @GetMapping("/all")
+    public List<LearningPlan> getAllLearningPlans() {
+        return planService.getAllLearningPlans();
+    }
 
+    //getAllLearningPlansByUserID
+    @GetMapping("/user/{userID}")
+    public List<LearningPlan> getAllLearningPlansByUserID(@PathVariable Long userID) {
+        return planService.getAllLearningPlansByUserId(userID);
+    }
 
+    //upvoteLearningPlan
+    @PutMapping("/upvote/{planID}")
+    public LearningPlan upvoteLearningPlan(@PathVariable Long planID) {
+        return planService.upvoteLearningPlan(planID);
+    }
 
 
 }
