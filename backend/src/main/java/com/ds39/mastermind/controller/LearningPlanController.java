@@ -71,5 +71,11 @@ public class LearningPlanController {
         return planService.upvoteLearningPlan(planID);
     }
 
+    //deleteIndividualLesson
+    @DeleteMapping("/lessons/{lessonId}")
+    public void deleteLesson(@PathVariable long lessonId) {
+        planService.deleteLesson(lessonId);
+}
+
 
 }

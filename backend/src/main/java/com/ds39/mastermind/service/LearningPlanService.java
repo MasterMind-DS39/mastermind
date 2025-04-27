@@ -10,14 +10,17 @@ import com.ds39.mastermind.entity.LearningPlan;
 import com.ds39.mastermind.entity.Lesson;
 import com.ds39.mastermind.repository.LearningPlanRepository;
 import com.ds39.mastermind.entity.Resource; // Ensure Resource is imported
+import com.ds39.mastermind.repository.LessonRepository; // Import LessonRepository
 
 @Service
 public class LearningPlanService {
 
     private final LearningPlanRepository planRepository;
+    private final LessonRepository lessonRepository; // Assuming you have a LessonRepository
     
 
-    public LearningPlanService(LearningPlanRepository planRepository) {
+    public LearningPlanService(LearningPlanRepository planRepository , LessonRepository lessonRepository) {
+        this.lessonRepository = lessonRepository; 
         this.planRepository = planRepository;
     }
 
@@ -98,7 +101,13 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
         return planRepository.save(plan);
     }
 
-    //
+    //deleteLesson
+    public Lesson deleteLesson(long lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new RuntimeException("Lesson not found with ID: " + lessonId));
+        lessonRepository.delete(lesson);
+        return lesson;
+    }
 
 
 }
