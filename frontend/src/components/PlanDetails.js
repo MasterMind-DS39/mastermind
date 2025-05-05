@@ -1,91 +1,34 @@
-// components/PlanList.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import LessonList from './LessonList';
+import LessonProgress from './LessonProgress';
 
-function PlanList({ title, endpoint, showActions = false }) {
-  const [plans, setPlans] = useState([]);
-  const navigate = useNavigate();
+function PlanDetails({ planId }) {
+  const [plan, setPlan] = useState(null);
+  const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    axios.get(endpoint)
-      .then(response => setPlans(response.data))
-      .catch(error => console.error('Error fetching plans:', error));
-  }, [endpoint]);
+    fetch(`http://localhost:8080/api/plans/${planId}`)
+      .then((res) => res.json())
+      .then((data) => setPlan(data));
+  }, [planId]);
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this plan?')) {
-      axios.delete(`http://localhost:8080/api/plans/${id}`)
-        .then(() => {
-          setPlans(plans.filter(plan => plan.id !== id));
-        })
-        .catch(error => console.error('Delete failed:', error));
-    }
-  };
+  if (!plan) return <p>Loading...</p>;
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h2 style={{ color: '#1877f2' }}>{title}</h2>
-      {plans.length === 0 ? (
-        <p>No learning plans available.</p>
-      ) : (
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
-          {plans.map(plan => (
-            <li key={plan.id} style={{
-              backgroundColor: '#f0f2f5',
-              margin: '10px 0',
-              padding: '15px',
-              borderRadius: '5px'
-            }}>
-              <Link
-                to={`/plans/${plan.id}`}
-                style={{
-                  fontSize: '18px',
-                  textDecoration: 'none',
-                  color: '#1877f2'
-                }}
-              >
-                {plan.title}
-              </Link>
-              <p>{plan.description}</p>
+    <div style={{ padding: '20px' }}>
+      <h2>{plan.title}</h2>
+      <p>{plan.description}</p>
 
-              {showActions && (
-                <div style={{ marginTop: '10px' }}>
-                  <button
-                    onClick={() => navigate(`/edit/${plan.id}`)}
-                    style={{
-                      marginRight: '10px',
-                      backgroundColor: '#1877f2',
-                      color: 'white',
-                      border: 'none',
-                      padding: '5px 10px',
-                      borderRadius: '4px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(plan.id)}
-                    style={{
-                      backgroundColor: '#e53935',
-                      color: 'white',
-                      border: 'none',
-                      padding: '5px 10px',
-                      borderRadius: '4px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
+      {!started ? (
+        <button onClick={() => setStarted(true)}>Start Learning Plan</button>
+      ) : (
+        <>
+          <LessonProgress lessons={plan.lessons} />
+          <LessonList lessons={plan.lessons} />
+        </>
       )}
     </div>
   );
 }
 
-export default PlanList;
+export default PlanDetails;
