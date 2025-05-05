@@ -116,7 +116,7 @@ class StatusBar extends Component {
               <div className="create-story-icon">
                 <AddIcon />
               </div>
-              <span className="create-story-text">Create story</span>
+              <span className="create-story-text">Share Daily Skills</span>
             </div>
           </div>
           
