@@ -2,10 +2,14 @@ package com.ds39.mastermind.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
+import java.util.Set;
 
 import com.ds39.mastermind.entity.Post;
 import com.ds39.mastermind.repository.PostRepo;
@@ -98,5 +102,15 @@ public class PostService {
         // Toggle the pin status
         postToToggle.setPinned(!postToToggle.isPinned());
         return postRepo.save(postToToggle);
+    }
+
+     public ArrayList<Post> searchPostsByHashtag(String query) {
+        String[] terms = query.split("\\s+");
+        Set<Post> uniquePosts = new HashSet<>();
+        for (String term : terms) {
+            String hashtag = "#" + term.toLowerCase();
+            uniquePosts.addAll(postRepo.findByHashtagsContainingIgnoreCase(hashtag));
+        }
+        return new ArrayList<>(uniquePosts);
     }
 }

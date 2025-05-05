@@ -76,6 +76,7 @@ class StatusBar extends Component {
         const thisContext = this;
         if (!image) return;
         
+<<<<<<< HEAD
         // Create a reference to 'status/[imageName]'
         const storageRef = ref(storage, `status/${image.name}`);
         
@@ -131,6 +132,44 @@ class StatusBar extends Component {
                     <button className="nav-button nav-button-left" onClick={this.scrollLeft}>
                         <ArrowBackIosNewIcon />
                     </button>
+=======
+        <div 
+          className="statusbar__container" 
+          ref={this.statusBarRef}
+          onScroll={this.handleScroll}
+        >
+          <div className="status create-story">
+            <div className="create-story-button" onClick={this.openUploadModal}>
+              <div className="create-story-icon">
+                <AddIcon />
+              </div>
+              <span className="create-story-text">Share Daily Skills</span>
+            </div>
+          </div>
+          
+          {this.state.statusList.map((status, index) => (
+            <div 
+              className="status" 
+              key={status.statusId}
+              onClick={() => this.openStoryViewer(index)}
+            >
+              <div className="status-card">
+                {status.mediaType === 'video' ? (
+                  <div className="status-video-container">
+                    <video 
+                      src={status.path} 
+                      className="status-background" 
+                      muted
+                    />
+                    <div className="video-indicator"></div>
+                  </div>
+                ) : (
+                  <img 
+                    src={status.path} 
+                    className="status-background" 
+                    alt="status"
+                  />
+>>>>>>> c2f91e5268317fddd1592149e7e295de905c8223
                 )}
                 
                 <div 
