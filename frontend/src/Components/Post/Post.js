@@ -506,11 +506,8 @@ class Post extends Component {
         </div>
         
         <div className="post_caption">
-          <span className="username" style={{ color: 'black' }}>
-            {this.props.userName}
-          </span> {this.props.caption}
+          <span className="username">{this.props.userName}</span> {this.props.caption}
         </div>
-
         
         {this.renderHashtags()}
         

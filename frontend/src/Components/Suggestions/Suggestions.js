@@ -15,7 +15,7 @@ class Suggestions extends Component {
         <div>
             <div className="suggestions__container">
                 <div className="suggestions__header">
-                    <div>People interested in your skills</div>
+                    <div>Suggestions For You</div>
                 </div>
                 <div className="suggestions__body">
                     <div className="suggestions__friends">
