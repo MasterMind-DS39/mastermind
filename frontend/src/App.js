@@ -18,6 +18,8 @@ function App() {
           {/* PlanDetails */}
           <Route path='/user/:userId' element={<ViewUserPlans />} />
           {/* ViewUserPlans */}
+          <Route path='/completed_plans' element={<ViewCompletedPlans />} />
+          {/* ViewCompletedPlans */}
         </Routes>
       </div>
     </Router>
