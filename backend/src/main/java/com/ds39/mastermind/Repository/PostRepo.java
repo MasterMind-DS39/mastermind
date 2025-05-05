@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ds39.mastermind.Entity.Post;
+import com.ds39.mastermind.entity.Post;
 
 @Repository
 public interface PostRepo extends CrudRepository<Post, Integer> {

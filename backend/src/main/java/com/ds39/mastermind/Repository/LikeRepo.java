@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ds39.mastermind.Entity.Like;
+import com.ds39.mastermind.entity.Like;
 
 @Repository
 public interface LikeRepo extends CrudRepository<Like, Integer> {

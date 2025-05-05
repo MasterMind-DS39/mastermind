@@ -1,9 +1,10 @@
-package com.ds39.mastermind.Service;
+package com.ds39.mastermind.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.ds39.mastermind.Entity.Users;
+
 import com.ds39.mastermind.Repository.UserRepo;
+import com.ds39.mastermind.entity.Users;
 
 
 @Service

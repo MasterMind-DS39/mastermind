@@ -1,4 +1,4 @@
-package com.ds39.mastermind.Service;
+package com.ds39.mastermind.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ds39.mastermind.Entity.Post;
 import com.ds39.mastermind.Repository.PostRepo;
+import com.ds39.mastermind.entity.Post;
 
 @Service
 public class PostService {

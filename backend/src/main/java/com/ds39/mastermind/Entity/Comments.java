@@ -1,4 +1,4 @@
-package com.ds39.mastermind.Entity;
+package com.ds39.mastermind.entity;
 
 
 import java.sql.Timestamp;

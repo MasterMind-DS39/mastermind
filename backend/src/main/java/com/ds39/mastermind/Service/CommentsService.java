@@ -1,4 +1,4 @@
-package com.ds39.mastermind.Service;
+package com.ds39.mastermind.service;
 
 
 import java.util.ArrayList;
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ds39.mastermind.Entity.Comments;
 import com.ds39.mastermind.Repository.CommentRepo;
+import com.ds39.mastermind.entity.Comments;
 
 @Service
 public class CommentsService {

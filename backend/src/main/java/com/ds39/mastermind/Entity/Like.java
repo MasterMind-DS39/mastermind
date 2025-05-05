@@ -1,5 +1,5 @@
 // D:\skillProto\backend\src\main\java\com\pafproject\skillshare\Entity\Like.java
-package com.ds39.mastermind.Entity;
+package com.ds39.mastermind.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

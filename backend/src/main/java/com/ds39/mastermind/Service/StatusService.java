@@ -1,4 +1,4 @@
-package com.ds39.mastermind.Service;
+package com.ds39.mastermind.service;
 
 
 
@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ds39.mastermind.Entity.Status;
 import com.ds39.mastermind.Repository.StatusRepo;
+import com.ds39.mastermind.entity.Status;
 
 @Service
 public class StatusService {

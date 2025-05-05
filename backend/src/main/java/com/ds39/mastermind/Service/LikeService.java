@@ -1,14 +1,14 @@
 // D:\skillProto\backend\src\main\java\com\pafproject\skillshare\Service\LikeService.java
-package com.ds39.mastermind.Service;
+package com.ds39.mastermind.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ds39.mastermind.Entity.Like;
-import com.ds39.mastermind.Entity.Post;
 import com.ds39.mastermind.Repository.LikeRepo;
 import com.ds39.mastermind.Repository.PostRepo;
+import com.ds39.mastermind.entity.Like;
+import com.ds39.mastermind.entity.Post;
 
 import java.util.Optional;
 
