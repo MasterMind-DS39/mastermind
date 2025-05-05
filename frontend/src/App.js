@@ -14,6 +14,10 @@ function App() {
           {/* ViewLearningPlans*/}
           <Route path="/create_learning_plan" element={<CreateLearningPlan />} />
           {/* CreateLearningPlan */}
+          <Route path='/plans/:id' element={<PlanDetails />} />
+          {/* PlanDetails */}
+          <Route path='/user/:userId' element={<ViewUserPlans />} />
+          {/* ViewUserPlans */}
         </Routes>
       </div>
     </Router>
