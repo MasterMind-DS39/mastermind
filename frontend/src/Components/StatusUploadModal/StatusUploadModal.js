@@ -155,23 +155,15 @@ function StatusUploadModal({ isOpen, onClose, onUploadComplete }) {
         </div>
         
         <div className="modal-actions">
-          <button 
-            className="cancel-button" 
-            onClick={() => {
-              resetForm();
-              onClose();
-            }}
-          >
-            Cancel
-          </button>
+          <button className="cancel-button" onClick={onClose}>Cancel</button>
           <button 
             className="create-button" 
             onClick={handleUpload}
-            disabled={isUploading || !selectedFile}
-          >
-            {isUploading ? 'Creating...' : 'Create Story'}
+            disabled={isUploading || (!selectedFile && !statusText)}>
+            Post Story
           </button>
         </div>
+
       </div>
     </div>
   );

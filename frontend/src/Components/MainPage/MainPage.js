@@ -18,11 +18,18 @@ class MainPage extends Component {
     }
 
     getPost = () => {
-        const thisContext = this;
-        fetch('http://localhost:8080/post')
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        
+        let fetchUrl = 'http://localhost:8080/post';
+        if (searchQuery) {
+            fetchUrl = `http://localhost:8080/post/search?query=${encodeURIComponent(searchQuery)}`;
+        }
+
+        fetch(fetchUrl)
             .then(response => response.json())
             .then(data => {
-                thisContext.setState({ postArray: data });
+                this.setState({ postArray: data });
             });
     }
 
@@ -38,6 +45,11 @@ class MainPage extends Component {
     }
 
     render() {
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        const hasSearch = !!searchQuery;
+
         return (
             <div>
                 <div className="mainpage__container">
@@ -52,24 +64,30 @@ class MainPage extends Component {
                                 src={uploadImage} 
                                 alt="Upload" 
                             />
-                            <span>Create Post</span>
+                            <span>Share some skills</span>
                         </div>
                     </div>
                     <div className="mainpage__divider"></div>
                 </div>
                 
-                {this.state.postArray.map((item) => (
-                    <Post 
-                        key={item.postId}
-                        id={item.postId}
-                        userName={item.userName}
-                        postImages={item.imagePaths}
-                        postVideos={item.videoPaths}
-                        likes={item.likeCount}
-                        caption={item.caption}
-                        hashtags={item.hashtags}
-                    />
-                ))}
+                {this.state.postArray.length > 0 ? (
+                    this.state.postArray.map((item) => (
+                        <Post 
+                            key={item.postId}
+                            id={item.postId}
+                            userName={item.userName}
+                            postImages={item.imagePaths}
+                            postVideos={item.videoPaths}
+                            likes={item.likeCount}
+                            caption={item.caption}
+                            hashtags={item.hashtags}
+                        />
+                    ))
+                ) : hasSearch ? (
+                    <div className="no-posts-message">
+                        No posts found matching your search
+                    </div>
+                ) : null}
 
                 {this.state.showModal && 
                     <CreatePostModal 

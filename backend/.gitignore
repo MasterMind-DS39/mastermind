@@ -4,7 +4,6 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-.DS_Store
 ### STS ###
 .apt_generated
 .classpath
@@ -32,5 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-.DS_Store
-.DS_Store
