@@ -1,4 +1,4 @@
-package com.ds39.mastermind.Repository;
+package com.ds39.mastermind.repository;
 
 
 import org.springframework.data.repository.CrudRepository;

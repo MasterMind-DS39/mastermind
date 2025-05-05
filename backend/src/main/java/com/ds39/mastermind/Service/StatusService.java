@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ds39.mastermind.Repository.StatusRepo;
 import com.ds39.mastermind.entity.Status;
+import com.ds39.mastermind.repository.StatusRepo;
 
 @Service
 public class StatusService {

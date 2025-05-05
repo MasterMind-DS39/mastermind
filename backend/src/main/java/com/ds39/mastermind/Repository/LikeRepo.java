@@ -1,5 +1,5 @@
 // D:\skillProto\backend\src\main\java\com\pafproject\skillshare\Repository\LikeRepo.java
-package com.ds39.mastermind.Repository;
+package com.ds39.mastermind.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
