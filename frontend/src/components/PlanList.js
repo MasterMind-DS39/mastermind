@@ -33,10 +33,15 @@ function PlanList({ title, endpoint }) {
                   textDecoration: 'none',
                   color: '#1877f2'
                 }}
+        
               >
                 {plan.title}
+                {plan.id}
+                
               </Link>
               <p>{plan.description}</p>
+              <p>Created by: {plan.createdBy}</p>
+              <p>upvotes: {plan.upvotes}</p>
             </li>
           ))}
         </ul>

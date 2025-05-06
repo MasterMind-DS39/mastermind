@@ -4,7 +4,7 @@ import PlanList from './PlanList';
 
 function ViewAllPlans() {
   return (
-    <PlanList title="All Learning Plans" endpoint="http://localhost:8080/api/plans" />
+    <PlanList title="All Learning Plans" endpoint="http://localhost:8080/api/plans/all" />
   );
 }
 
