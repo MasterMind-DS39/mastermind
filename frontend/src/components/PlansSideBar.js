@@ -28,11 +28,24 @@ function PlanSidebar() {
 
   return (
     <div style={sidebarStyle}>
-      <Link to="/all_learning_plans" style={linkStyle}>All Learning Plans</Link>
-      <Link to="/user/:userId" style={linkStyle}>Your Plans</Link>
-      <Link to="/completed_plans" style={linkStyle}>Completed Plans</Link>
-      <Link to="/ongoing-plans" style={linkStyle}>Ongoing Plans</Link>
-      <Link to="/create_learning_plan" style={linkStyle}>Create Plan</Link>
+      <Link to="/all_learning_plans" style={linkStyle}>
+        All Learning Plans
+      </Link>
+      <Link to="/user/:userId" style={linkStyle}>
+        Your Plans
+      </Link>
+      <Link to="/completed_plans" style={linkStyle}>
+        Completed Plans
+      </Link>
+      <Link to="/ongoing-plans" style={linkStyle}>
+        Ongoing Plans
+      </Link>
+      <Link to="/create_learning_plan" style={linkStyle}>
+        Create Plan
+      </Link>
+      <Link to="/ai_plan" style={linkStyle}>
+        Generate Plan
+      </Link>
     </div>
   );
 }

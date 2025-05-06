@@ -74,8 +74,32 @@
     		<artifactId>okhttp</artifactId>
     		<version>4.12.0</version>
 		</dependency>
+
+			<!-- LangChain4j Core -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j</artifactId>
+			<version>1.0.0-rc1</version>
+		</dependency>
+
+		<!-- LangChain4j Spring Boot Starter -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-spring-boot-starter</artifactId>
+			<version>1.0.0-beta4</version>
+		</dependency>
+
+		<!-- LangChain4j OpenAI Integration -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-open-ai</artifactId>
+			<version>1.0.0-rc1</version>
+		</dependency>
+				
+
 		
 	</dependencies>
+	
 
 	<build>
 		<plugins>

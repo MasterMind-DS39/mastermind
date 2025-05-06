@@ -8,6 +8,7 @@ import CompletedPlans from './components/CompletedPlans';
 import OngoingPlans from './components/OngoingPlans';
 import PlanSidebar from './components/PlansSideBar';
 import UpdatePlan from './components/UpdatePlan';
+import AiPlanCreate from './components/AiPlanCreate';
 
 
 function App() {
@@ -40,6 +41,9 @@ function App() {
           <Route path="/ongoing-plans" element={<OngoingPlans />} />
           {/* OngoingPlans */}
           <Route path='/update_plan/:planId' element={<UpdatePlan />} />
+          {/* UpdatePlan */}
+          <Route path='/ai_plan' element={<AiPlanCreate />} />
+          {/* AiPlanCreate */}
         </Routes>
 
 
