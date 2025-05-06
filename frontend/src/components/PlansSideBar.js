@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Sidebar() {
+function PlanSidebar() {
   const sidebarStyle = {
     height: "100vh",
     width: "220px",
@@ -37,4 +37,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default PlanSidebar;

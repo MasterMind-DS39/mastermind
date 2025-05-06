@@ -24,7 +24,7 @@ public class LearningPlanService {
         this.planRepository = planRepository;
     }
 
-
+//createLearningPlan
 public LearningPlan createLearningPlan(Long userId, LearningPlan plan) {
     plan.setCreatedByUserId(userId);
 
@@ -43,33 +43,45 @@ public LearningPlan createLearningPlan(Long userId, LearningPlan plan) {
     return planRepository.save(plan);
 }
 
+//updateLearningPlan
 public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
     LearningPlan existingPlan = planRepository.findById(planId)
             .orElseThrow(() -> new RuntimeException("Learning plan not found with ID: " + planId));
 
-    existingPlan.setTitle(updatedPlan.getTitle());
-    existingPlan.setDescription(updatedPlan.getDescription());
-    existingPlan.setUpvotes(updatedPlan.getUpvotes());
+    // Update main fields
+    if (updatedPlan.getTitle() != null) {
+        existingPlan.setTitle(updatedPlan.getTitle());
+    }
+    if (updatedPlan.getDescription() != null) {
+        existingPlan.setDescription(updatedPlan.getDescription());
+    }
+    if (updatedPlan.getUpvotes() >= 0) {
+        existingPlan.setUpvotes(updatedPlan.getUpvotes());
+    }
 
-    
+    // Safely clear and reassign lessons and resources
     if (updatedPlan.getLessons() != null) {
-        for (Lesson lesson : updatedPlan.getLessons()) {
-            lesson.setPlan(existingPlan); 
-            if (lesson.getResources() != null) {
-                for (Resource resource : lesson.getResources()) {
-                    resource.setLesson(lesson); 
+        List<Lesson> existingLessons = existingPlan.getLessons();
+        existingLessons.clear();
+
+        for (Lesson newLesson : updatedPlan.getLessons()) {
+            newLesson.setPlan(existingPlan);
+
+            if (newLesson.getResources() != null) {
+                for (Resource res : newLesson.getResources()) {
+                    res.setLesson(newLesson);
                 }
             }
+
+            existingLessons.add(newLesson);
         }
-        existingPlan.getLessons().clear(); // remove old references safely
-        existingPlan.getLessons().addAll(updatedPlan.getLessons()); // add updated ones
     }
 
     return planRepository.save(existingPlan);
 }
 
 
-
+// getLearningPlan
     public LearningPlan getLearningPlan(Long planId) {
         return planRepository.findById(planId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Learning plan not found with ID: " + planId));
@@ -80,7 +92,7 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
         return planRepository.findByCreatedByUserId(userId);
     }
 
-
+//deleteLearningPlan
     public LearningPlan deleteLearningPlan(long planId) {
         LearningPlan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new RuntimeException("Learning plan not found with ID: " + planId));

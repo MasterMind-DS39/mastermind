@@ -6,7 +6,8 @@ import PlanDetails from './components/PlanDetails';
 import ViewUserPlans from './components/ViewUserPlans';
 import CompletedPlans from './components/CompletedPlans';
 import OngoingPlans from './components/OngoingPlans';
-import Sidebar from './components/SideBar';
+import PlanSidebar from './components/PlansSideBar';
+import UpdatePlan from './components/UpdatePlan';
 
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
     <Router>
       <div>
         
-        <Sidebar />
+        <PlanSidebar />
 
         <div  style={contentStyle}>
         <h1>MasterMind App</h1>
@@ -38,6 +39,7 @@ function App() {
           {/* ViewCompletedPlans */}
           <Route path="/ongoing-plans" element={<OngoingPlans />} />
           {/* OngoingPlans */}
+          <Route path='/update_plan/:planId' element={<UpdatePlan />} />
         </Routes>
 
 
