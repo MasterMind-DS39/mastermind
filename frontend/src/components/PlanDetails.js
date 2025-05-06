@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 
 function PlanDetails() {
   const { planId } = useParams();
@@ -15,6 +15,17 @@ function PlanDetails() {
       .then((data) => setPlan(data))
       .catch((err) => console.error("Error fetching plan:", err));
   }, [planId]);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/api/plans/${plan.id}`);
+      alert("Plan deleted successfully");
+      navigate('/'); // Adjust this route as needed
+    } catch (error) {
+      console.error("Error deleting plan:", error);
+      alert("Failed to delete the plan");
+    }
+  };
 
   if (!plan) return <p>Loading...</p>;
 
@@ -57,7 +68,10 @@ function PlanDetails() {
       ))}
 
       {currentUserId === plan.createdByUserId && (
-        <button onClick={handleUpdate} style={{ marginTop: '20px' }}>Update Plan</button>
+        <div style={{ marginTop: '20px' }}>
+          <button onClick={handleUpdate} style={{ marginRight: '10px' }}>Update Plan</button>
+          <button onClick={handleDelete} style={{ backgroundColor: 'red', color: 'white' }}>Delete Plan</button>
+        </div>
       )}
     </div>
   );
