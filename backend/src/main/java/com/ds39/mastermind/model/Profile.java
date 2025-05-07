@@ -1,18 +1,23 @@
 package com.ds39.mastermind.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "profiles")
 public class Profile {
     
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
     private String name;
     private String email;
+    private String password;
+    private String role = "USER"; // Default role
 
     public Long getId() {
         return id;
@@ -45,5 +50,10 @@ public class Profile {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
 }

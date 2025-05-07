@@ -1,3 +1,4 @@
+// src/Profiles/EditProfile.js
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -25,12 +26,16 @@ export default function EditProfile() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`http://localhost:8080/profile/${id}`, user);
+    await axios.put(`http://localhost:8080/profile/${id}`, user, {
+      withCredentials: true,
+    });
     navigate("/");
   };
 
   const loadUser = async () => {
-    const result = await axios.get(`http://localhost:8080/profile/${id}`);
+    const result = await axios.get(`http://localhost:8080/profile/${id}`, {
+      withCredentials: true,
+    });
     setUser(result.data);
   };
 

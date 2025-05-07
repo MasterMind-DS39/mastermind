@@ -1,3 +1,4 @@
+// src/Profiles/AddProfiles.js
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,9 +10,10 @@ export default function AddProfile() {
     name: "",
     username: "",
     email: "",
+    password: ""
   });
 
-  const { name, username, email } = user;
+  const { name, username, email, password} = user;
 
   const onInputChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -66,6 +68,19 @@ export default function AddProfile() {
                 placeholder="Enter your e-mail address"
                 name="email"
                 value={email}
+                onChange={(e) => onInputChange(e)}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="Password" className="form-label">
+                  Password
+              </label>
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Enter your password"
+                name="password"
+                value={password}
                 onChange={(e) => onInputChange(e)}
               />
             </div>

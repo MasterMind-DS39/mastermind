@@ -2,30 +2,24 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
-  return (
-    <div>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div className="container-fluid">
-          <Link className="navbar-brand" to="/">
-            Profile Management
-          </Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
+  const handleLogout = async () => {
+    try {
+      await fetch('http://localhost:8080/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
-          <Link className="btn btn-outline-light" to="/addprofile">
-            Create A profile
-          </Link>
-        </div>
-      </nav>
-    </div>
+  return (
+    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="/">Profile App</Link>
+        <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
+      </div>
+    </nav>
   );
 }
