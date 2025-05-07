@@ -10,18 +10,22 @@ import com.ds39.mastermind.entity.LearningPlan;
 import com.ds39.mastermind.entity.Lesson;
 import com.ds39.mastermind.repository.LearningPlanRepository;
 import com.ds39.mastermind.entity.Resource; // Ensure Resource is imported
+import com.ds39.mastermind.entity.UserLessonProgress;
 import com.ds39.mastermind.repository.LessonRepository; // Import LessonRepository
+import com.ds39.mastermind.repository.UserLessonProgressRepository; // Import UserLessonProgressRepository
 
 @Service
 public class LearningPlanService {
 
     private final LearningPlanRepository planRepository;
-    private final LessonRepository lessonRepository; // Assuming you have a LessonRepository
+    private final LessonRepository lessonRepository; 
+    private final UserLessonProgressRepository progressRepo;
     
 
-    public LearningPlanService(LearningPlanRepository planRepository , LessonRepository lessonRepository) {
+    public LearningPlanService(LearningPlanRepository planRepository , LessonRepository lessonRepository , UserLessonProgressRepository progressRepo) {
         this.lessonRepository = lessonRepository; 
         this.planRepository = planRepository;
+        this.progressRepo = progressRepo;
     }
 
 //createLearningPlan
@@ -120,6 +124,20 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
         lessonRepository.delete(lesson);
         return lesson;
     }
+
+    public void markLessonCompleted(Long userId, Long lessonId, boolean completed) {
+    UserLessonProgress progress = progressRepo.findByUserIdAndLessonId(userId, lessonId)
+        .orElse(new UserLessonProgress());
+    progress.setUserId(userId);
+    progress.setLesson(lessonRepository.findById(lessonId).orElseThrow());
+    progress.setCompleted(completed);
+    progressRepo.save(progress);
+}
+
+//getCompletedLessonIds
+public List<Long> getCompletedLessonIds(Long userId, Long planId) {
+    return progressRepo.findCompletedLessonIdsByUserIdAndPlanId(userId, planId);
+}
 
 
 }

@@ -3,7 +3,6 @@ package com.ds39.mastermind.entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -39,5 +38,8 @@ public class Lesson {
     @JsonManagedReference
     private List<Resource> resources;
 
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<UserLessonProgress> progressList;
 
 }

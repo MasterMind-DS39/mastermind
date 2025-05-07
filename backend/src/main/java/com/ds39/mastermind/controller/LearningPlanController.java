@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.ds39.mastermind.entity.*;
@@ -19,6 +21,7 @@ import java.util.List;
 public class LearningPlanController {
 
     private final LearningPlanService planService;
+    
 
     public LearningPlanController(LearningPlanService planService) {
         this.planService = planService;
@@ -76,6 +79,18 @@ public class LearningPlanController {
     public void deleteLesson(@PathVariable long lessonId) {
         planService.deleteLesson(lessonId);
 }
+//LearningPlanProgress
+    @PutMapping("/progress")
+    public ResponseEntity<?> updateLessonProgress(@RequestParam Long userId, @RequestParam Long lessonId, @RequestParam boolean completed) {
+    planService.markLessonCompleted(userId, lessonId, completed);
+    return ResponseEntity.ok().build();
+}
+
+    //learningPlanProgressGetting
+    @GetMapping("/progress")
+    public List<Long> getLessonProgress(@RequestParam Long userId, @RequestParam Long planId) {
+        return planService.getCompletedLessonIds(userId, planId); // This should return a list of completed lesson IDs
+    }
 
 
 }
