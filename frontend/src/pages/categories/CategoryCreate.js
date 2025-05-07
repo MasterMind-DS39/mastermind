@@ -1,3 +1,4 @@
+// src/pages/categories/CategoryCreate.js
 import React from 'react';
 import { Container, Typography, Box, Breadcrumbs, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';

@@ -1,3 +1,4 @@
+// src/services/SkillCategoryService.js
 import apiClient from './apiClient';
 
 const SKILL_CATEGORIES_URL = '/skill-categories';

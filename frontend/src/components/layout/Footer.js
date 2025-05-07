@@ -1,3 +1,4 @@
+// src/components/layout/Footer.js
 import React from 'react';
 import { Box, Typography, Container, Link, Grid } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';

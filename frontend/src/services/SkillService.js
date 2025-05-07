@@ -1,3 +1,4 @@
+// src/services/SkillService.js
 import apiClient from './apiClient';
 
 const SKILLS_URL = '/skills';

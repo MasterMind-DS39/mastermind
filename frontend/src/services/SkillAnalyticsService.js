@@ -1,3 +1,4 @@
+// src/services/SkillAnalyticsService.js
 import apiClient from './apiClient';
 
 const ANALYTICS_URL = '/skill-analytics';
