@@ -70,8 +70,8 @@ public class LearningPlanController {
 
     //upvoteLearningPlan
     @PutMapping("/upvote/{planID}")
-    public LearningPlan upvoteLearningPlan(@PathVariable Long planID) {
-        return planService.upvoteLearningPlan(planID);
+    public LearningPlan upvoteLearningPlan(@PathVariable Long planID, @RequestParam Long userID) {
+        return planService.upvoteLearningPlan(planID, userID);
     }
 
     //deleteIndividualLesson
@@ -84,6 +84,12 @@ public class LearningPlanController {
     public ResponseEntity<?> updateLessonProgress(@RequestParam Long userId, @RequestParam Long lessonId, @RequestParam boolean completed) {
     planService.markLessonCompleted(userId, lessonId, completed);
     return ResponseEntity.ok().build();
+}
+
+    //getLearningPlanProgress
+    @GetMapping("/user/{userId}/upvoted-plans")
+    public List<LearningPlan> getUpvotedPlansByUser(@PathVariable Long userId) {
+    return planService.getUpvotedPlansByUser(userId);
 }
 
     //learningPlanProgressGetting

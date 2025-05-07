@@ -1,5 +1,6 @@
 package com.ds39.mastermind.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,8 @@ import com.ds39.mastermind.entity.Resource; // Ensure Resource is imported
 import com.ds39.mastermind.entity.UserLessonProgress;
 import com.ds39.mastermind.repository.LessonRepository; // Import LessonRepository
 import com.ds39.mastermind.repository.UserLessonProgressRepository; // Import UserLessonProgressRepository
+import com.ds39.mastermind.repository.UserRepository;
+import com.ds39.mastermind.entity.User; // Import User entity
 
 @Service
 public class LearningPlanService {
@@ -20,9 +23,11 @@ public class LearningPlanService {
     private final LearningPlanRepository planRepository;
     private final LessonRepository lessonRepository; 
     private final UserLessonProgressRepository progressRepo;
+    private final UserRepository userRepository;
     
 
-    public LearningPlanService(LearningPlanRepository planRepository , LessonRepository lessonRepository , UserLessonProgressRepository progressRepo) {
+    public LearningPlanService(LearningPlanRepository planRepository , LessonRepository lessonRepository , UserLessonProgressRepository progressRepo , UserRepository userRepository) {
+        this.userRepository = userRepository;
         this.lessonRepository = lessonRepository; 
         this.planRepository = planRepository;
         this.progressRepo = progressRepo;
@@ -110,11 +115,39 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
     }
 
     //upvoteLearningPlan
-    public LearningPlan upvoteLearningPlan(Long planId) {
+    public LearningPlan upvoteLearningPlan(Long planId, Long userId) {
         LearningPlan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new RuntimeException("Learning plan not found with ID: " + planId));
-        plan.setUpvotes(plan.getUpvotes() + 1);
-        return planRepository.save(plan);
+                .orElseThrow(() -> new RuntimeException("Learning plan not found"));
+        User user = userRepository.findById(userId.intValue())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Prevent duplicate upvotes
+        if (!user.getUpvotedPlans().contains(plan)) {
+            user.getUpvotedPlans().add(plan);
+            plan.setUpvotes(plan.getUpvotes() + 1);
+            userRepository.save(user);
+        } else {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User has already upvoted this plan");
+        }
+
+        return plan;
+    }
+
+    // removeUpvoteFromLearningPlan
+    public LearningPlan removeUpvoteFromLearningPlan(Long planId, Long userId) {
+        LearningPlan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new RuntimeException("Learning plan not found"));
+        User user = userRepository.findById(userId.intValue())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getUpvotedPlans().contains(plan)) {
+            user.getUpvotedPlans().remove(plan);
+            plan.getUpvotedByUsers().remove(user);
+            plan.setUpvotes(plan.getUpvotes() - 1);
+            userRepository.save(user);
+        }
+
+        return plan;
     }
 
     //deleteLesson
@@ -138,6 +171,13 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
 public List<Long> getCompletedLessonIds(Long userId, Long planId) {
     return progressRepo.findCompletedLessonIdsByUserIdAndPlanId(userId, planId);
 }
+
+//getUpvotedPlansByUser
+    public List<LearningPlan> getUpvotedPlansByUser(Long userId) {
+        User user = userRepository.findById(userId.intValue())
+            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        return new ArrayList<>(user.getUpvotedPlans());  // assuming getUpvotedPlans() exists
+    }
 
 
 }

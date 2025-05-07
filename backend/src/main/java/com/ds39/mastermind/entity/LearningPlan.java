@@ -5,11 +5,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -31,7 +36,13 @@ public class LearningPlan {
     @JsonManagedReference
     private List<Lesson> lessons;
 
-
+    @ManyToMany
+    @JoinTable(
+        name = "user_upvoted_plans",
+        joinColumns = @JoinColumn(name = "plan_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> upvotedByUsers = new HashSet<>();
 
     
 }
