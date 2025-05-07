@@ -2,6 +2,9 @@ package com.ds39.mastermind.entity;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
@@ -49,6 +52,7 @@ public class User {
 
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
         name = "user_upvoted_plans",
         joinColumns = @JoinColumn(name = "user_id"),

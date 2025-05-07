@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -37,6 +38,7 @@ public class LearningPlan {
     private List<Lesson> lessons;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
         name = "user_upvoted_plans",
         joinColumns = @JoinColumn(name = "plan_id"),

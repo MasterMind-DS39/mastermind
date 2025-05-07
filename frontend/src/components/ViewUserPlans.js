@@ -1,6 +1,6 @@
 // components/ViewUserPlans.js
-import React from 'react';
-import PlanList from './PlanList';
+import React from "react";
+import PlanList from "./PlanList";
 
 function ViewUserPlans() {
   const userId = 1; // Hardcoded for now

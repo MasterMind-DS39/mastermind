@@ -11,7 +11,10 @@ function PlanList({ title, endpoint }) {
   useEffect(() => {
     axios
       .get(endpoint)
-      .then((response) => setPlans(response.data))
+      .then((response) => {
+        console.log("Fetched plans:", response.data);
+        setPlans(response.data);
+      })
       .catch((error) => console.error("Error fetching plans:", error));
 
     axios
@@ -58,11 +61,7 @@ function PlanList({ title, endpoint }) {
       >
         {title}
       </h2>
-      {plans.length === 0 ? (
-        <p style={{ fontSize: "16px", color: "#606770" }}>
-          No learning plans available.
-        </p>
-      ) : (
+      {Array.isArray(plans) && plans.length > 0 ? (
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {plans.map((plan) => (
             <li
@@ -125,6 +124,10 @@ function PlanList({ title, endpoint }) {
             </li>
           ))}
         </ul>
+      ) : (
+        <p style={{ fontSize: "16px", color: "#606770" }}>
+          No learning plans available.
+        </p>
       )}
     </div>
   );
