@@ -75,6 +75,12 @@ public class LearningPlanController {
         return planService.upvoteLearningPlan(planID, userID);
     }
 
+    //handleDownvote
+    @PutMapping("/downvote/{planID}")
+    public LearningPlan removeUpvoteFromLearningPlan(@PathVariable Long planID, @RequestParam Long userID) {
+        return planService.removeUpvoteFromLearningPlan(planID, userID);
+    }
+
     //deleteIndividualLesson
     @DeleteMapping("/lessons/{lessonId}")
     public void deleteLesson(@PathVariable long lessonId) {
@@ -87,7 +93,7 @@ public class LearningPlanController {
     return ResponseEntity.ok().build();
 }
 
-    //getLearningPlanProgress
+    //getLearningPlansUpvotedByUser
     @GetMapping("/user/{userId}/upvoted-plans")
     public List<LearningPlan> getUpvotedPlansByUser(@PathVariable Long userId) {
     return planService.getUpvotedPlansByUser(userId);

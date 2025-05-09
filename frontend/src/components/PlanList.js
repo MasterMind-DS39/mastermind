@@ -19,14 +19,20 @@ function PlanList({ title, endpoint }) {
 
     axios
       .get(`http://localhost:8080/api/plans/user/${userId}/upvoted-plans`)
-      .then((response) => setUserUpvotedPlans(response.data))
+      .then((response) => {
+        console.log("Fetched upvoted plans:", response.data);
+        setUserUpvotedPlans(response.data.map((plan) => plan.id));
+      }) // <- extract just IDs})
       .catch((error) => console.error("Error fetching upvoted plans:", error));
   }, [endpoint]);
 
   const handleUpvote = async (planId) => {
     try {
       const hasUpvoted = userUpvotedPlans.includes(planId);
-      if (hasUpvoted) return; // prevent duplicate upvote
+      if (hasUpvoted) {
+        await handleDownvote(planId);
+        return;
+      }
 
       const url = `http://localhost:8080/api/plans/upvote/${planId}?userID=${userId}`;
       await axios.put(url);
@@ -40,6 +46,26 @@ function PlanList({ title, endpoint }) {
       setUserUpvotedPlans((prev) => [...prev, planId]);
     } catch (error) {
       console.error("Upvote failed:", error);
+    }
+  };
+
+  const handleDownvote = async (planId) => {
+    try {
+      const hasUpvoted = userUpvotedPlans.includes(planId);
+      if (!hasUpvoted) return; // prevent duplicate downvote
+
+      const url = `http://localhost:8080/api/plans/downvote/${planId}?userID=${userId}`;
+      await axios.put(url);
+
+      // Update UI: decrement count and mark as not upvoted
+      setPlans((prevPlans) =>
+        prevPlans.map((p) =>
+          p.id === planId ? { ...p, upvotes: p.upvotes - 1 } : p
+        )
+      );
+      setUserUpvotedPlans((prev) => prev.filter((id) => id !== planId));
+    } catch (error) {
+      console.error("Downvote failed:", error);
     }
   };
 
