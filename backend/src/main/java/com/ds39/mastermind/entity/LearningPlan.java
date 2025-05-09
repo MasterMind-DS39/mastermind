@@ -46,5 +46,8 @@ public class LearningPlan {
     )
     private Set<User> upvotedByUsers = new HashSet<>();
 
+    @ManyToMany(mappedBy = "startedPlans")
+    @JsonIgnore
+    private Set<User> startedByUsers = new HashSet<>();
     
 }

@@ -179,5 +179,23 @@ public List<Long> getCompletedLessonIds(Long userId, Long planId) {
         return new ArrayList<>(user.getUpvotedPlans());  // assuming getUpvotedPlans() exists
     }
 
+    // getStartedPlansByUser
+    public List<LearningPlan> getStartedPlansByUser(Long userId) {
+        User user = userRepository.findById(userId.intValue())
+            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        return new ArrayList<>(user.getStartedPlans());
+    }
 
+    // startLearningPlan
+    public void startLearningPlan(Long userId, Long planId) {
+        User user = userRepository.findById(userId.intValue())
+            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        LearningPlan plan = planRepository.findById(planId)
+            .orElseThrow(() -> new RuntimeException("Learning plan not found with ID: " + planId));
+
+        if (!user.getStartedPlans().contains(plan)) {
+            user.getStartedPlans().add(plan);
+            userRepository.save(user);
+        }
+    }
 }

@@ -8,6 +8,6 @@ import java.util.List;
 public interface LearningPlanRepository extends JpaRepository<LearningPlan, Long> {
     List<LearningPlan> findByCreatedByUserId(Long userId);
 
-
+    List<LearningPlan> findByStartedByUsers_Id(Long userId);
 
 }

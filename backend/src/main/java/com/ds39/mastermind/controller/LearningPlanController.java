@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ds39.mastermind.entity.*;
 import com.ds39.mastermind.service.*;
@@ -97,6 +98,19 @@ public class LearningPlanController {
     public List<Long> getLessonProgress(@RequestParam Long userId, @RequestParam Long planId) {
         return planService.getCompletedLessonIds(userId, planId); // This should return a list of completed lesson IDs
     }
+
+    @GetMapping("/started/{userId}")
+    public List<LearningPlan> getStartedPlansByUser(@PathVariable Long userId) {
+        return planService.getStartedPlansByUser(userId);
+    }
+
+    @PutMapping("/start/{userId}/{planId}")
+    public ResponseEntity<?> startLearningPlan(@PathVariable Long userId, @PathVariable Long planId) {
+        planService.startLearningPlan(userId, planId);
+        return ResponseEntity.ok().build();
+    }
+
+
 
 
 }

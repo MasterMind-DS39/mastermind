@@ -10,7 +10,7 @@ public class LangChainConfig {
     @Bean
     public OpenAiChatModel openAiChatModel() {
         return OpenAiChatModel.builder()
-                .apiKey("YOUR_OPENAI")
+                .apiKey("OpenAI API Key Here") // Replace with your OpenAI API key
                 .modelName("gpt-3.5-turbo") 
                 .temperature(0.7)
                 .build();

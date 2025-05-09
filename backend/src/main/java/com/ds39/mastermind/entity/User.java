@@ -2,6 +2,7 @@ package com.ds39.mastermind.entity;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.HashSet;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -59,6 +60,15 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "plan_id")
     )
     private Set<LearningPlan> upvotedPlans;
+
+    @ManyToMany
+    @JsonIgnore
+    @JoinTable(
+        name = "user_started_plans",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "plan_id")
+    )
+    private Set<LearningPlan> startedPlans = new HashSet<>();
 
     public Set<LearningPlan> getUpvotedPlans() {
         return upvotedPlans;
@@ -132,5 +142,13 @@ public class User {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public Set<LearningPlan> getStartedPlans() {
+        return startedPlans;
+    }
+
+    public void setStartedPlans(Set<LearningPlan> startedPlans) {
+        this.startedPlans = startedPlans;
     }
 }

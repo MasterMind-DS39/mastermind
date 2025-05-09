@@ -5,47 +5,62 @@ import { Link } from "react-router-dom";
 function PlanSidebar() {
   const sidebarStyle = {
     height: "100vh",
-    width: "220px",
-    backgroundColor: "#1877F2", // Facebook Blue
-    paddingTop: "20px",
+    width: "250px",
+    zIndex: 1,
+    background: "linear-gradient(to bottom, #1877F2, #145DA0)",
+    paddingTop: "30px",
     color: "white",
     position: "fixed",
     top: 0,
     left: 0,
+    boxShadow: "2px 0 5px rgba(0, 0, 0, 0.2)",
+    fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
   };
 
   const linkStyle = {
     display: "block",
-    padding: "12px 20px",
+    padding: "14px 24px",
     textDecoration: "none",
-    color: "white",
-    fontWeight: "bold",
+    color: "#ffffff",
+    fontWeight: "600",
+    fontSize: "16px",
+    transition: "all 0.3s ease",
+    borderRadius: "8px",
+    margin: "8px 12px",
   };
 
-  const linkHover = {
-    backgroundColor: "#165ecc",
+  const linkHoverStyle = {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    cursor: "pointer",
   };
+
+  const [hoveredLink, setHoveredLink] = React.useState(null);
+
+  const links = [
+    { to: "/all_learning_plans", label: "All Learning Plans" },
+    { to: "/user/2", label: "Your Plans" },
+    { to: "/completed_plans", label: "Completed Plans" },
+    { to: "/ongoing-plans", label: "Ongoing Plans" },
+    { to: "/create_learning_plan", label: "Create Plan" },
+    { to: "/ai_plan", label: "Generate Plan" },
+  ];
 
   return (
     <div style={sidebarStyle}>
-      <Link to="/all_learning_plans" style={linkStyle}>
-        All Learning Plans
-      </Link>
-      <Link to="/user/:userId" style={linkStyle}>
-        Your Plans
-      </Link>
-      <Link to="/completed_plans" style={linkStyle}>
-        Completed Plans
-      </Link>
-      <Link to="/ongoing-plans" style={linkStyle}>
-        Ongoing Plans
-      </Link>
-      <Link to="/create_learning_plan" style={linkStyle}>
-        Create Plan
-      </Link>
-      <Link to="/ai_plan" style={linkStyle}>
-        Generate Plan
-      </Link>
+      {links.map((link, index) => (
+        <Link
+          key={index}
+          to={link.to}
+          style={{
+            ...linkStyle,
+            ...(hoveredLink === index ? linkHoverStyle : {}),
+          }}
+          onMouseEnter={() => setHoveredLink(index)}
+          onMouseLeave={() => setHoveredLink(null)}
+        >
+          {link.label}
+        </Link>
+      ))}
     </div>
   );
 }

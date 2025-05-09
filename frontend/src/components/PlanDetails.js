@@ -8,6 +8,8 @@ function PlanDetails() {
   const [plan, setPlan] = useState(null);
   const [started, setStarted] = useState(false);
   const [completedLessonIds, setCompletedLessonIds] = useState(null);
+  const [quiz, setQuiz] = useState(null);
+  const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
   const currentUserId = 1; // Replace with actual logged-in user ID in real implementation
 
   useEffect(() => {
@@ -16,6 +18,26 @@ function PlanDetails() {
       .then((data) => setPlan(data))
       .catch((err) => console.error("Error fetching plan:", err));
   }, [planId]);
+
+  useEffect(() => {
+    async function checkIfStarted() {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/plans/started/${currentUserId}`
+        );
+        const startedPlanIds = res.data.map((p) => p.id);
+        if (startedPlanIds.includes(parseInt(planId))) {
+          setStarted(true);
+        }
+      } catch (err) {
+        console.error("Error checking started plans:", err);
+      }
+    }
+
+    if (plan && !started) {
+      checkIfStarted();
+    }
+  }, [plan, planId, started]);
 
   useEffect(() => {
     async function fetchProgress() {
@@ -87,12 +109,41 @@ function PlanDetails() {
 
   if (!plan) return <p>Loading...</p>;
 
-  const handleStart = () => {
-    setStarted(true);
+  const handleStart = async () => {
+    try {
+      await axios.put(
+        `http://localhost:8080/api/plans/start/${currentUserId}/${plan.id}`
+      );
+      setStarted(true);
+    } catch (err) {
+      console.error("Error starting the plan:", err);
+    }
   };
 
   const handleUpdate = () => {
     navigate(`/update_plan/${plan.id}`);
+  };
+
+  const handleGenerateQuiz = async () => {
+    const completedLessons = plan.lessons
+      .filter((lesson) => lesson.completed)
+      .map((lesson) => lesson.title);
+
+    if (completedLessons.length === 0) return;
+
+    try {
+      setIsGeneratingQuiz(true);
+      const res = await axios.post(
+        "http://localhost:8080/api/ai/generate-quiz",
+        completedLessons
+      );
+      setQuiz(res.data);
+      console.log("Quiz generated:", res.data);
+    } catch (err) {
+      console.error("Failed to generate quiz:", err);
+    } finally {
+      setIsGeneratingQuiz(false);
+    }
   };
 
   return (
@@ -148,6 +199,30 @@ function PlanDetails() {
             )}
             %
           </p>
+          {started && (
+            <div style={{ marginTop: "20px" }}>
+              {plan.lessons.filter((l) => l.completed).length === 0 ? (
+                <p style={{ color: "#888" }}>
+                  Complete at least one lesson to generate a quiz.
+                </p>
+              ) : (
+                <button
+                  onClick={handleGenerateQuiz}
+                  disabled={isGeneratingQuiz}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#f7b928",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {isGeneratingQuiz ? "Generating..." : "Generate Quiz"}
+                </button>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -216,6 +291,36 @@ function PlanDetails() {
           >
             Delete Plan
           </button>
+        </div>
+      )}
+      {quiz && (
+        <div
+          style={{
+            marginTop: "30px",
+            backgroundColor: "#fff",
+            padding: "20px",
+            borderRadius: "6px",
+            boxShadow: "0 0 5px rgba(0,0,0,0.05)",
+          }}
+        >
+          <h3 style={{ color: "#1877f2" }}>Quiz</h3>
+          <ul style={{ paddingLeft: "20px" }}>
+            {quiz.questions.map((q, index) => (
+              <li key={index} style={{ marginBottom: "15px" }}>
+                <strong>Q{index + 1}:</strong> {q.question}
+                <ul style={{ listStyleType: "none", paddingLeft: "15px" }}>
+                  {Object.entries(q.options).map(([key, value]) => (
+                    <li key={key}>
+                      <strong>{key}:</strong> {value}
+                    </li>
+                  ))}
+                </ul>
+                <em style={{ color: "green" }}>
+                  Correct Answer: {q.correctAnswer}
+                </em>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
