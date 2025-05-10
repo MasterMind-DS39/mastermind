@@ -16,6 +16,7 @@ import com.ds39.mastermind.repository.LessonRepository; // Import LessonReposito
 import com.ds39.mastermind.repository.UserLessonProgressRepository; // Import UserLessonProgressRepository
 import com.ds39.mastermind.repository.UserRepository;
 import com.ds39.mastermind.entity.User; // Import User entity
+import com.ds39.mastermind.exception.ResourceNotFoundException;
 
 @Service
 public class LearningPlanService {
@@ -55,14 +56,14 @@ public LearningPlan createLearningPlan(Long userId, LearningPlan plan) {
     // getCompletedPlansByUser
     public List<LearningPlan> getCompletedPlansByUser(Long userId) {
         User user = userRepository.findById(userId.intValue())
-            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
         return new ArrayList<>(user.getCompletedPlans());
     }
 
 //updateLearningPlan
 public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
     LearningPlan existingPlan = planRepository.findById(planId)
-            .orElseThrow(() -> new RuntimeException("Learning plan not found with ID: " + planId));
+            .orElseThrow(() -> new ResourceNotFoundException("Learning plan not found with ID: " + planId));
 
     // Update main fields
     if (updatedPlan.getTitle() != null) {
@@ -111,7 +112,7 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
 //deleteLearningPlan
     public LearningPlan deleteLearningPlan(long planId) {
         LearningPlan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new RuntimeException("Learning plan not found with ID: " + planId));
+                .orElseThrow(() -> new ResourceNotFoundException("Learning plan not found with ID: " + planId));
         planRepository.delete(plan);
         return plan;
     }
@@ -124,9 +125,9 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
     //upvoteLearningPlan
     public LearningPlan upvoteLearningPlan(Long planId, Long userId) {
         LearningPlan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new RuntimeException("Learning plan not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Learning plan not found"));
         User user = userRepository.findById(userId.intValue())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         // Prevent duplicate upvotes
         if (!user.getUpvotedPlans().contains(plan)) {
@@ -143,9 +144,9 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
     // removeUpvoteFromLearningPlan
     public LearningPlan removeUpvoteFromLearningPlan(Long planId, Long userId) {
         LearningPlan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new RuntimeException("Learning plan not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Learning plan not found"));
         User user = userRepository.findById(userId.intValue())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.getUpvotedPlans().contains(plan)) {
             user.getUpvotedPlans().remove(plan);
@@ -160,7 +161,7 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
     //deleteLesson
     public Lesson deleteLesson(long lessonId) {
         Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new RuntimeException("Lesson not found with ID: " + lessonId));
+                .orElseThrow(() -> new ResourceNotFoundException("Lesson not found with ID: " + lessonId));
         lessonRepository.delete(lesson);
         return lesson;
     }
@@ -169,7 +170,8 @@ public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
     UserLessonProgress progress = progressRepo.findByUserIdAndLessonId(userId, lessonId)
         .orElse(new UserLessonProgress());
     progress.setUserId(userId);
-    progress.setLesson(lessonRepository.findById(lessonId).orElseThrow());
+    progress.setLesson(lessonRepository.findById(lessonId)
+        .orElseThrow(() -> new ResourceNotFoundException("Lesson not found with ID: " + lessonId)));
     progress.setCompleted(completed);
     progressRepo.save(progress);
 }
@@ -182,23 +184,23 @@ public List<Long> getCompletedLessonIds(Long userId, Long planId) {
 //getUpvotedPlansByUser
     public List<LearningPlan> getUpvotedPlansByUser(Long userId) {
         User user = userRepository.findById(userId.intValue())
-            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
         return new ArrayList<>(user.getUpvotedPlans());  // assuming getUpvotedPlans() exists
     }
 
     // getStartedPlansByUser
     public List<LearningPlan> getStartedPlansByUser(Long userId) {
         User user = userRepository.findById(userId.intValue())
-            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
         return new ArrayList<>(user.getStartedPlans());
     }
 
     // startLearningPlan
     public void startLearningPlan(Long userId, Long planId) {
         User user = userRepository.findById(userId.intValue())
-            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
         LearningPlan plan = planRepository.findById(planId)
-            .orElseThrow(() -> new RuntimeException("Learning plan not found with ID: " + planId));
+            .orElseThrow(() -> new ResourceNotFoundException("Learning plan not found with ID: " + planId));
 
         if (!user.getStartedPlans().contains(plan)) {
             user.getStartedPlans().add(plan);
@@ -209,9 +211,9 @@ public List<Long> getCompletedLessonIds(Long userId, Long planId) {
     //finish a learning plan
     public void finishLearningPlan(Long userId, Long planId) {
         User user = userRepository.findById(userId.intValue())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         LearningPlan plan = planRepository.findById(planId)
-            .orElseThrow(() -> new RuntimeException("Plan not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Plan not found"));
 
         // Remove from started plans if present
         if (user.getStartedPlans().contains(plan)) {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,62 +31,60 @@ public class LearningPlanController {
 
 
     @PostMapping("/{userID}")
-    public LearningPlan createPlan(@PathVariable Long userID , @RequestBody LearningPlan plan) {
-        // Call the service to create a learning plan
-        return planService.createLearningPlan(userID, plan);
-
+    public ResponseEntity<LearningPlan> createPlan(@PathVariable Long userID, @RequestBody LearningPlan plan) {
+        LearningPlan createdPlan = planService.createLearningPlan(userID, plan);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPlan);
     }
 
     @GetMapping("/{planID}")
-    public LearningPlan getPlanByID(@PathVariable long planID){
-        return planService.getLearningPlan(planID);
-
-    
+    public ResponseEntity<LearningPlan> getPlanByID(@PathVariable long planID) {
+        LearningPlan foundPlan = planService.getLearningPlan(planID);
+        return ResponseEntity.ok(foundPlan);
     }
 
     @PutMapping("/{planID}")
-    public LearningPlan updateLearningPlan(@PathVariable long planID, @RequestBody LearningPlan plan){
-
-        return planService.updateLearningPlan(planID, plan);
-
-
+    public ResponseEntity<LearningPlan> updateLearningPlan(@PathVariable long planID, @RequestBody LearningPlan plan) {
+        LearningPlan updatedPlan = planService.updateLearningPlan(planID, plan);
+        return ResponseEntity.ok(updatedPlan);
     }
 
     //deleteLearningPlan
     @DeleteMapping("/{planID}")
-    public void deleteLearningPlan(@PathVariable long planID){
+    public ResponseEntity<Void> deleteLearningPlan(@PathVariable long planID) {
         planService.deleteLearningPlan(planID);
+        return ResponseEntity.noContent().build();
     }
 
     //getAllLearningPlans
     @GetMapping("/all")
-    public List<LearningPlan> getAllLearningPlans() {
-        return planService.getAllLearningPlans();
+    public ResponseEntity<List<LearningPlan>> getAllLearningPlans() {
+        return ResponseEntity.ok(planService.getAllLearningPlans());
     }
 
     //getAllLearningPlansByUserID
     @GetMapping("/user/{userID}")
-    public List<LearningPlan> getAllLearningPlansByUserID(@PathVariable Long userID) {
-        return planService.getAllLearningPlansByUserId(userID);
+    public ResponseEntity<List<LearningPlan>> getAllLearningPlansByUserID(@PathVariable Long userID) {
+        return ResponseEntity.ok(planService.getAllLearningPlansByUserId(userID));
     }
 
     //upvoteLearningPlan
     @PutMapping("/upvote/{planID}")
-    public LearningPlan upvoteLearningPlan(@PathVariable Long planID, @RequestParam Long userID) {
-        return planService.upvoteLearningPlan(planID, userID);
+    public ResponseEntity<LearningPlan> upvoteLearningPlan(@PathVariable Long planID, @RequestParam Long userID) {
+        return ResponseEntity.ok(planService.upvoteLearningPlan(planID, userID));
     }
 
     //handleDownvote
     @PutMapping("/downvote/{planID}")
-    public LearningPlan removeUpvoteFromLearningPlan(@PathVariable Long planID, @RequestParam Long userID) {
-        return planService.removeUpvoteFromLearningPlan(planID, userID);
+    public ResponseEntity<LearningPlan> removeUpvoteFromLearningPlan(@PathVariable Long planID, @RequestParam Long userID) {
+        return ResponseEntity.ok(planService.removeUpvoteFromLearningPlan(planID, userID));
     }
 
     //deleteIndividualLesson
     @DeleteMapping("/lessons/{lessonId}")
-    public void deleteLesson(@PathVariable long lessonId) {
+    public ResponseEntity<Void> deleteLesson(@PathVariable long lessonId) {
         planService.deleteLesson(lessonId);
-}
+        return ResponseEntity.noContent().build();
+    }
 //LearningPlanProgress
     @PutMapping("/progress")
     public ResponseEntity<?> updateLessonProgress(@RequestParam Long userId, @RequestParam Long lessonId, @RequestParam boolean completed) {
@@ -95,19 +94,19 @@ public class LearningPlanController {
 
     //getLearningPlansUpvotedByUser
     @GetMapping("/user/{userId}/upvoted-plans")
-    public List<LearningPlan> getUpvotedPlansByUser(@PathVariable Long userId) {
-        return planService.getUpvotedPlansByUser(userId);
-}
+    public ResponseEntity<List<LearningPlan>> getUpvotedPlansByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(planService.getUpvotedPlansByUser(userId));
+    }
 
     //learningPlanProgressGetting
     @GetMapping("/progress")
-    public List<Long> getLessonProgress(@RequestParam Long userId, @RequestParam Long planId) {
-        return planService.getCompletedLessonIds(userId, planId); // This should return a list of completed lesson IDs
+    public ResponseEntity<List<Long>> getLessonProgress(@RequestParam Long userId, @RequestParam Long planId) {
+        return ResponseEntity.ok(planService.getCompletedLessonIds(userId, planId));
     }
 
     @GetMapping("/started/{userId}")
-    public List<LearningPlan> getStartedPlansByUser(@PathVariable Long userId) {
-        return planService.getStartedPlansByUser(userId);
+    public ResponseEntity<List<LearningPlan>> getStartedPlansByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(planService.getStartedPlansByUser(userId));
     }
 
     @PutMapping("/start/{userId}/{planId}")
@@ -131,15 +130,15 @@ public class LearningPlanController {
 
     // Get all completed plans by user
     @GetMapping("/user/{userId}/completed")
-    public List<LearningPlan> getCompletedPlansByUser(@PathVariable Long userId) {
-        return planService.getCompletedPlansByUser(userId);
-}
+    public ResponseEntity<List<LearningPlan>> getCompletedPlansByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(planService.getCompletedPlansByUser(userId));
+    }
 
     //searchLearningPlans
     @GetMapping("/search")
-    public List<LearningPlan> searchPlans(@RequestParam String query) {
-        return planService.searchPlansByKeyword(query);
-}
+    public ResponseEntity<List<LearningPlan>> searchPlans(@RequestParam String query) {
+        return ResponseEntity.ok(planService.searchPlansByKeyword(query));
+    }
 
 
 }
