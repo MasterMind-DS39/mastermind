@@ -70,6 +70,23 @@ public class User {
     )
     private Set<LearningPlan> startedPlans = new HashSet<>();
 
+    @ManyToMany
+    @JsonIgnore
+    @JoinTable(
+        name = "user_completed_plans",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "plan_id")
+    )
+    private Set<LearningPlan> completedPlans = new HashSet<>();
+
+    public Set<LearningPlan> getCompletedPlans() {
+        return completedPlans;
+    }
+
+    public void setCompletedPlans(Set<LearningPlan> completedPlans) {
+        this.completedPlans = completedPlans;
+    }
+
     public Set<LearningPlan> getUpvotedPlans() {
         return upvotedPlans;
     }

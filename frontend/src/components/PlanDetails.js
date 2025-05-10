@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaFlagCheckered } from "react-icons/fa";
 
 function PlanDetails() {
   const { planId } = useParams();
@@ -65,7 +66,7 @@ function PlanDetails() {
       }
     }
 
-    if (plan && plan.lessons && completedLessonIds === null) {
+    if (plan && plan.lessons) {
       fetchProgress();
     }
   }, [planId, plan, completedLessonIds]);
@@ -143,6 +144,31 @@ function PlanDetails() {
       console.error("Failed to generate quiz:", err);
     } finally {
       setIsGeneratingQuiz(false);
+    }
+  };
+
+  const handleFinishPlan = async () => {
+    try {
+      // Remove from started
+      await axios.delete(
+        `http://localhost:8080/api/plans/finish/${currentUserId}/${plan.id}`
+      );
+
+      // Mark as completed
+      const allLessonsCompleted = plan.lessons.every(
+        (lesson) => lesson.completed
+      );
+      if (allLessonsCompleted) {
+        await axios.put(
+          `http://localhost:8080/api/plans/complete/${currentUserId}/${plan.id}`
+        );
+      }
+
+      alert("Plan finished!");
+      navigate(allLessonsCompleted ? "/completed-plans" : "/");
+    } catch (err) {
+      console.error("Error finishing the plan:", err);
+      alert("Failed to finish the plan.");
     }
   };
 
@@ -321,6 +347,27 @@ function PlanDetails() {
               </li>
             ))}
           </ul>
+        </div>
+      )}
+      {started && (
+        <div style={{ marginTop: "20px", textAlign: "right" }}>
+          <button
+            onClick={handleFinishPlan}
+            style={{
+              padding: "10px 15px",
+              backgroundColor: "#4CAF50",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <FaFlagCheckered />
+            Finish Plan
+          </button>
         </div>
       )}
     </div>

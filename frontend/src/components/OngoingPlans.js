@@ -1,15 +1,48 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function OngoingPlans() {
   const [plans, setPlans] = useState([]);
   const userId = 1;
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    fetchPlans();
-  }, []);
+    const fetchUpdatedPlans = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/plans/started/${userId}`
+        );
+
+        const plansWithProgress = await Promise.all(
+          response.data.map(async (plan) => {
+            const progressRes = await axios.get(
+              `http://localhost:8080/api/plans/progress`,
+              {
+                params: {
+                  userId: userId,
+                  planId: plan.id,
+                },
+              }
+            );
+            const completedLessonIds = progressRes.data;
+            const lessonsWithProgress = plan.lessons.map((lesson) => ({
+              ...lesson,
+              completed: completedLessonIds.includes(lesson.id),
+            }));
+            return { ...plan, lessons: lessonsWithProgress };
+          })
+        );
+
+        setPlans(plansWithProgress);
+      } catch (err) {
+        console.error("Error fetching plans or progress:", err);
+      }
+    };
+
+    fetchUpdatedPlans();
+  }, [location]);
 
   const fetchPlans = () => {
     axios

@@ -52,6 +52,13 @@ public LearningPlan createLearningPlan(Long userId, LearningPlan plan) {
     return planRepository.save(plan);
 }
 
+    // getCompletedPlansByUser
+    public List<LearningPlan> getCompletedPlansByUser(Long userId) {
+        User user = userRepository.findById(userId.intValue())
+            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        return new ArrayList<>(user.getCompletedPlans());
+    }
+
 //updateLearningPlan
 public LearningPlan updateLearningPlan(long planId, LearningPlan updatedPlan) {
     LearningPlan existingPlan = planRepository.findById(planId)
@@ -197,5 +204,25 @@ public List<Long> getCompletedLessonIds(Long userId, Long planId) {
             user.getStartedPlans().add(plan);
             userRepository.save(user);
         }
+    }
+
+    //finish a learning plan
+    public void finishLearningPlan(Long userId, Long planId) {
+        User user = userRepository.findById(userId.intValue())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        LearningPlan plan = planRepository.findById(planId)
+            .orElseThrow(() -> new RuntimeException("Plan not found"));
+
+        // Remove from started plans if present
+        if (user.getStartedPlans().contains(plan)) {
+            user.getStartedPlans().remove(plan);
+        }
+
+        // Add to completed plans if not already present
+        if (!user.getCompletedPlans().contains(plan)) {
+            user.getCompletedPlans().add(plan);
+        }
+
+        userRepository.save(user);
     }
 }

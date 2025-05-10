@@ -117,6 +117,23 @@ public class LearningPlanController {
     }
 
 
+    @DeleteMapping("/finish/{userId}/{planId}")
+    public ResponseEntity<?> finishLearningPlan(@PathVariable Long userId, @PathVariable Long planId) {
+        planService.finishLearningPlan(userId, planId);
+        return ResponseEntity.ok().build();
+}
+
+    @PutMapping("/complete/{userId}/{planId}")
+    public ResponseEntity<?> completeLearningPlan(@PathVariable Long userId, @PathVariable Long planId) {
+        planService.finishLearningPlan(userId, planId);
+        return ResponseEntity.ok().build();
+    }
+
+    // Get all completed plans by user
+    @GetMapping("/user/{userId}/completed")
+    public List<LearningPlan> getCompletedPlansByUser(@PathVariable Long userId) {
+        return planService.getCompletedPlansByUser(userId);
+}
 
 
 }
