@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Date;
 
 @Service
 public class NotificationService {
@@ -40,6 +41,21 @@ public class NotificationService {
         }
         notificationRepo.saveAll(notifications);
     }
+
+    public void createCommentNotification(String recipientUserId, String commenterUserId, String postId, String commenterUserName, String commentText) {
+        String message = commenterUserName + " commented: \"" + commentText + "\" on your post";
+        Notification notification = new Notification();
+        notification.setRecipientUserId(recipientUserId);
+        notification.setSenderUserId(commenterUserId);
+        notification.setPostId(postId);
+        notification.setMessage(message);
+        notification.setTimestamp(new Timestamp(new Date().getTime()));
+        notification.setRead(false);
+        notificationRepo.save(notification);
+    }
+
+    // ADD THIS METHOD
+    public void deleteNotification(int notificationId, String userId) {
+        notificationRepo.deleteByIdAndRecipientUserId(notificationId, userId);
+    }
 }
-
-

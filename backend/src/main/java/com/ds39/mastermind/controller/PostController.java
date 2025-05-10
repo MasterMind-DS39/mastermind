@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,7 +58,7 @@ public class PostController {
         return postService.updatePost(post);
     }
     
-    // Add endpoint for pinning/unpinning posts
+    
     @PutMapping("/pin/{postId}/{userId}")
     private Post togglePinPost(@PathVariable("postId") String postId, @PathVariable("userId") String userId) {
         return postService.togglePinPost(postId, userId);
@@ -66,5 +67,11 @@ public class PostController {
     @GetMapping("/search")
     private ArrayList<Post> searchPosts(@RequestParam String query) {
         return postService.searchPostsByHashtag(query);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleServerError(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body("Internal server error: " + ex.getMessage());
     }
 }

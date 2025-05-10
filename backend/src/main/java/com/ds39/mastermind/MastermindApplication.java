@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SkillshareApplication {
+public class MastermindApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SkillshareApplication.class, args);
+		SpringApplication.run(MastermindApplication.class, args);
 	}
 
 }

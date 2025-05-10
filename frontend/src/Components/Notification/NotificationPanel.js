@@ -4,6 +4,22 @@ import './NotificationPanel.css';
 import { Link } from 'react-router-dom';
 
 class NotificationPanel extends Component {
+    handleDelete = (id) => {
+        const userId = JSON.parse(localStorage.getItem("users"))?.uid;
+        if (!userId) return;
+        fetch(`http://localhost:8080/notifications/${userId}/${id}`, {
+            method: "DELETE"
+        })
+        .then(() => {
+            if (typeof this.props.onDelete === "function") {
+                this.props.onDelete(id);
+            }
+        })
+        .catch(err => {
+            console.error("Failed to delete notification", err);
+        });
+    }
+
     render() {
         const { notifications, onClose } = this.props;
         const notificationsArray = Array.isArray(notifications) ? notifications : [];
@@ -26,6 +42,11 @@ class NotificationPanel extends Component {
                                         <div className="notification-time">
                                             {new Date(n.timestamp).toLocaleString()}
                                         </div>
+                                        <button
+                                            className="notification-delete-btn"
+                                            onClick={() => this.handleDelete(n.id)}
+                                            title="Delete notification"
+                                        >🗑️</button>
                                     </div>
                                 </li>
                             ))}

@@ -188,15 +188,9 @@ const LoginPage = () => {
           </div>
 
           <div className="social-buttons">
-            <button className="social-button google">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/480px-Google_%22G%22_logo.svg.png" alt="" className="social-icon" />
-                Sign in with Google
-            </button>
-            <button className="social-button github">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="" className="social-icon" />
-                Sign in with GitHub
-            </button>
-            </div>
+            <SignInWithGoogle />
+            <SignInWithGithub />
+          </div>
 
 
           <div className="auth-footer">

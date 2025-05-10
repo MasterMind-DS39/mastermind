@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Set;
 
 import com.ds39.mastermind.entity.Post;
@@ -46,11 +45,11 @@ public class PostService {
             postItem.setUserName(userService.displayUserMetaData(postItem.getUserId()).getUserName());
         }
         
-        // Sort posts: pinned first, then by ID (newest first)
+        
         Collections.sort(postList, (a, b) -> {
             if (a.isPinned() && !b.isPinned()) return -1;
             if (!a.isPinned() && b.isPinned()) return 1;
-            return b.getId() - a.getId(); // If pin status is the same, sort by ID (newest first)
+            return b.getId() - a.getId();
         });
         
         return postList;
@@ -72,7 +71,6 @@ public class PostService {
     public Post updatePost(Post updatedPost) {
         Post existingPost = postRepo.findByPostId(updatedPost.getPostId());
         if (existingPost != null) {
-            // Update fields but preserve the ID and pinned status
             int id = existingPost.getId();
             boolean pinned = existingPost.isPinned();
             updatedPost.setId(id);
@@ -90,7 +88,6 @@ public class PostService {
             return null; // Post doesn't exist or doesn't belong to user
         }
         
-        // If we're pinning the post, unpin any other pinned posts by this user
         if (!postToToggle.isPinned()) {
             ArrayList<Post> pinnedPosts = postRepo.findByUserIdAndPinned(userId, true);
             for (Post post : pinnedPosts) {
@@ -113,4 +110,6 @@ public class PostService {
         }
         return new ArrayList<>(uniquePosts);
     }
+
+    
 }

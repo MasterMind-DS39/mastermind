@@ -24,4 +24,13 @@ public class NotificationController {
     public void markAllAsRead(@PathVariable String userId) {
         notificationService.markAllAsRead(userId);
     }
+
+    // ADD THIS ENDPOINT
+    @DeleteMapping("/{userId}/{notificationId}")
+    public void deleteNotification(
+        @PathVariable String userId,
+        @PathVariable int notificationId
+    ) {
+        notificationService.deleteNotification(notificationId, userId);
+    }
 }

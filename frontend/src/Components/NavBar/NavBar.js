@@ -60,6 +60,12 @@ class NavBar extends Component {
         }
     }
 
+    handleDeleteNotification = (id) => {
+        this.setState((prevState) => ({
+            notifications: prevState.notifications.filter(n => n.id !== id)
+        }));
+    }
+
     handleSearchChange = (e) => {
         const query = e.target.value;
         this.setState({ 
@@ -238,6 +244,7 @@ class NavBar extends Component {
                         <NotificationPanel 
                             notifications={this.state.notifications}
                             onClose={this.closeNotifications}
+                            onDelete={this.handleDeleteNotification}
                         />
                     </div>
                 )}
