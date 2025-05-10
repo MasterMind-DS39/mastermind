@@ -17,6 +17,7 @@ public class Post {
     @Id
     @GeneratedValue
     private int Id;
+
     private String postId;
     private String userId;
     private String userName;

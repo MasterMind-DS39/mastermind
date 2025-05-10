@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import "./NavBar.css";
 import Grid from '@mui/material/Grid';
 import SearchIcon from '@mui/icons-material/Search';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
 import insta_log from "../../images/logo3.jpg";
 import home from "../../images/home.svg";
 import message from "../../images/message.svg";
@@ -10,8 +12,8 @@ import react from "../../images/love.svg";
 import Avatar from '@mui/material/Avatar';
 import pp from "../../images/pp1.png";
 import { auth } from '../firebase';
-import { signOut } from 'firebase/auth';
 import { Link } from 'react-router-dom';
+import NotificationPanel from '../Notification/NotificationPanel';
 
 class NavBar extends Component {
     constructor(props) {
@@ -20,8 +22,42 @@ class NavBar extends Component {
             searchQuery: '',
             searchResults: [],
             showSuggestions: false,
-            activeIcon: 'home'
+            activeIcon: 'home',
+            showNotifications: false,
+            notifications: [],
+            unreadCount: 0
         };
+        this.notificationRef = React.createRef();
+    }
+
+    componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+        this.checkForUnreadNotifications();
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+
+    checkForUnreadNotifications = () => {
+        const userId = JSON.parse(localStorage.getItem("users"))?.uid;
+        if (!userId) return;
+
+        fetch(`http://localhost:8080/notifications/unread/${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                this.setState({ unreadCount: data.count || 0 });
+            })
+            .catch(err => {
+                console.error("Error fetching unread notifications:", err);
+            });
+    }
+
+    handleClickOutside = (event) => {
+        if (this.notificationRef.current && !this.notificationRef.current.contains(event.target) && 
+            !event.target.closest('.notification-icon')) {
+            this.setState({ showNotifications: false });
+        }
     }
 
     handleSearchChange = (e) => {
@@ -54,20 +90,42 @@ class NavBar extends Component {
         }
     };
 
-    handleLogout = () => {
-        signOut(auth)
-            .then(() => {
-                localStorage.removeItem("users");
-                window.location.reload();
-            })
-            .catch((error) => {
-                console.error("Logout error:", error);
-            });
-    };
-
     setActiveIcon = (iconName) => {
         this.setState({ activeIcon: iconName });
     };
+
+    toggleNotifications = () => {
+        if (!this.state.showNotifications) {
+            this.openNotifications();
+        } else {
+            this.closeNotifications();
+        }
+    }
+
+    openNotifications = () => {
+        const userId = JSON.parse(localStorage.getItem("users"))?.uid;
+        if (!userId) return;
+    
+        fetch(`http://localhost:8080/notifications/${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                const notifications = Array.isArray(data) ? data : [];
+                this.setState({ 
+                    notifications, 
+                    showNotifications: true,
+                    unreadCount: 0
+                });
+                fetch(`http://localhost:8080/notifications/markAllRead/${userId}`, { method: "POST" });
+            })            
+            .catch(err => {
+                console.error("Error fetching notifications:", err);
+                this.setState({ notifications: [], showNotifications: true });
+            });
+    }
+    
+    closeNotifications = () => {
+        this.setState({ showNotifications: false });
+    }
 
     renderSuggestions = () => {
         if (!this.state.showSuggestions) return null;
@@ -82,7 +140,7 @@ class NavBar extends Component {
                     this.state.searchResults.map(user => (
                         <Link 
                             key={user.userId}
-                            to={`/profile/${user.userId}`} // <-- Make sure this matches your new route!
+                            to={`/profile/${user.userId}`}
                             className="suggestion-item"
                             onClick={() => this.setState({ showSuggestions: false })}
                         >
@@ -144,6 +202,20 @@ class NavBar extends Component {
                         >
                             <img src={find} alt="Explore" />
                         </Link>
+                        
+                        <div 
+                            className={`nav-icon notification-icon ${this.state.activeIcon === 'notifications' ? 'active' : ''}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                this.setActiveIcon('notifications');
+                                this.toggleNotifications();
+                            }}
+                        >
+                            <Badge badgeContent={this.state.unreadCount} color="error">
+                                <NotificationsIcon />
+                            </Badge>
+                        </div>
+
                         <Link 
                             to="/activity" 
                             className={`nav-icon ${this.state.activeIcon === 'activity' ? 'active' : ''}`}
@@ -158,14 +230,17 @@ class NavBar extends Component {
                         >
                             <Avatar src={pp} className="profile-avatar" />
                         </Link>
-                        <button 
-                            onClick={this.handleLogout}
-                            className="logout-button"
-                        >
-                            Logout
-                        </button>
                     </div>
                 </div>
+
+                {this.state.showNotifications && (
+                    <div ref={this.notificationRef}>
+                        <NotificationPanel 
+                            notifications={this.state.notifications}
+                            onClose={this.closeNotifications}
+                        />
+                    </div>
+                )}
             </div>
         );
     }

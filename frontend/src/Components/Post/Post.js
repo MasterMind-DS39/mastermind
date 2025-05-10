@@ -5,6 +5,9 @@ import comment from "../../images/comment.svg";
 import share from "../../images/share.svg";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -25,12 +28,16 @@ class Post extends Component {
       showGallery: false,
       currentMediaIndex: 0,
       mutedVideos: {},
-      manuallyPausedVideos: {}, // Track which videos user has manually paused
-      videoProgress: {}, // Track progress for each video
-      videoHovered: {}   // Track hover state for each video
+      manuallyPausedVideos: {},
+      videoProgress: {},
+      videoHovered: {},
+      showMenu: false,
+      saved: false,
+      saving: false,
     };
-    
+
     this.postRef = React.createRef();
+    this.menuRef = React.createRef();
     this.videoRefs = [];
     this.videoObserver = null;
   }
@@ -39,6 +46,8 @@ class Post extends Component {
     this.getComments();
     this.getLikeStatus();
     this.setupVideoObserver();
+    this.fetchSavedStatus();
+    document.addEventListener("mousedown", this.handleClickOutsideMenu);
   }
 
   componentDidUpdate(prevProps) {
@@ -52,24 +61,58 @@ class Post extends Component {
     if (this.videoObserver) {
       this.videoObserver.disconnect();
     }
+    document.removeEventListener("mousedown", this.handleClickOutsideMenu);
   }
+
+  handleClickOutsideMenu = (event) => {
+    if (this.menuRef.current && !this.menuRef.current.contains(event.target)) {
+      this.setState({ showMenu: false });
+    }
+  };
+
+  fetchSavedStatus = () => {
+    const user = JSON.parse(localStorage.getItem("users"));
+    const userId = user?.userId || user?.uid;
+    if (!userId) return;
+    fetch(`http://localhost:8080/saved/${userId}/${this.props.id}`)
+      .then(res => res.json())
+      .then(data => this.setState({ saved: !!data }))
+      .catch(() => this.setState({ saved: false }));
+  };
+
+  handleSaveToggle = () => {
+    const user = JSON.parse(localStorage.getItem("users"));
+    const userId = user?.userId || user?.uid;
+    if (!userId) return;
+    this.setState({ saving: true });
+
+    if (!this.state.saved) {
+      fetch(`http://localhost:8080/saved/${userId}/${this.props.id}`, { method: "POST" })
+        .then(res => res.json())
+        .then(() => this.setState({ saved: true, saving: false, showMenu: false }))
+        .catch(() => this.setState({ saving: false }));
+    } else {
+      fetch(`http://localhost:8080/saved/${userId}/${this.props.id}`, { method: "DELETE" })
+        .then(res => res.json())
+        .then(() => this.setState({ saved: false, saving: false, showMenu: false }))
+        .catch(() => this.setState({ saving: false }));
+    }
+  };
 
   setupVideoObserver = () => {
     if (this.videoObserver) {
       this.videoObserver.disconnect();
     }
 
-    this.videoObserver = new IntersectionObserver(
+    this.videoObserver = new window.IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
           const video = entry.target;
           const index = parseInt(video.dataset.index, 10);
-          
-          // Skip if user manually paused this video
+
           if (this.state.manuallyPausedVideos[index]) return;
-          
+
           if (entry.isIntersecting) {
-            // Video is in viewport
             video.muted = true;
             this.setState(prev => ({
               mutedVideos: {
@@ -77,9 +120,8 @@ class Post extends Component {
                 [index]: true
               }
             }));
-            video.play().catch(e => console.log("Autoplay prevented:", e));
+            video.play().catch(e => {});
           } else {
-            // Video is out of viewport
             if (!this.state.manuallyPausedVideos[index]) {
               video.pause();
             }
@@ -92,15 +134,12 @@ class Post extends Component {
       }
     );
 
-    // Observe videos after a small delay to ensure they're rendered
     setTimeout(() => {
       const videos = this.postRef.current?.querySelectorAll('video') || [];
       videos.forEach((video, index) => {
         video.dataset.index = index;
         this.videoObserver.observe(video);
         this.videoRefs[index] = video;
-        
-        // Initialize muted state
         this.setState(prev => ({
           mutedVideos: {
             ...prev.mutedVideos,
@@ -145,12 +184,29 @@ class Post extends Component {
 
   handleLikeClick = () => {
     const userId = JSON.parse(localStorage.getItem("users"))?.uid;
-    if (!userId) return;
+    if (!userId) {
+      console.log("User not logged in");
+      return;
+    }
+
+    this.setState(prevState => ({ 
+      liked: !prevState.liked, 
+      likeCount: prevState.liked ? prevState.likeCount - 1 : prevState.likeCount + 1 
+    }));
 
     fetch(`http://localhost:8080/likes/${this.props.id}/${userId}`, {
-      method: 'POST'
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
     })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Server responded with ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         this.setState({ 
           liked: data.liked, 
@@ -159,6 +215,7 @@ class Post extends Component {
       })
       .catch(error => {
         console.error("Error toggling like:", error);
+        this.getLikeStatus();
       });
   }
 
@@ -219,7 +276,6 @@ class Post extends Component {
     if (!video) return;
 
     if (video.paused) {
-      // User wants to play
       video.play()
         .then(() => {
           this.setState(prev => ({
@@ -233,7 +289,6 @@ class Post extends Component {
           console.error("Error playing video:", error);
         });
     } else {
-      // User wants to pause
       video.pause();
       this.setState(prev => ({
         manuallyPausedVideos: {
@@ -263,7 +318,6 @@ class Post extends Component {
     });
   }
 
-  // Add these new methods
   handleVideoTimeUpdate = (index) => {
     const video = this.videoRefs[index];
     if (!video) return;
@@ -311,9 +365,9 @@ class Post extends Component {
   renderMediaGrid = () => {
     const allMedia = this.getAllMedia();
     if (allMedia.length === 0) return null;
-  
+
     const gridClass = `post__media-grid post__media-grid-${Math.min(allMedia.length, 4)}`;
-  
+
     return (
       <div className="post__media-container">
         <div className={gridClass}>
@@ -347,7 +401,6 @@ class Post extends Component {
                     onClick={(e) => this.toggleVideoPlay(index, e)}
                     onTimeUpdate={() => this.handleVideoTimeUpdate(index)}
                   />
-                  {/* Play/Pause overlay button */}
                   <div 
                     className="post__video-play-button"
                     onClick={(e) => this.toggleVideoPlay(index, e)}
@@ -358,7 +411,6 @@ class Post extends Component {
                       <PauseCircleOutlineIcon className="play-pause-icon" />
                     )}
                   </div>
-                  {/* Mute/Unmute button */}
                   <div 
                     className="post__video-mute-button"
                     onClick={(e) => this.toggleVideoMute(index, e)}
@@ -369,7 +421,6 @@ class Post extends Component {
                       <VolumeUpIcon className="volume-icon" />
                     )}
                   </div>
-                  {/* Progress bar - only shown on hover or when paused */}
                   {(this.state.videoHovered[index] || this.videoRefs[index]?.paused) && (
                     <div 
                       className="post__video-progress-container" 
@@ -377,7 +428,7 @@ class Post extends Component {
                     >
                       <div className="post__video-progress-bar">
                         <div 
-                          className="post__video-progress" 
+                          className="post__video-progress"
                           style={{
                             width: `${(this.state.videoProgress[index]?.currentTime / this.state.videoProgress[index]?.duration) * 100 || 0}%`
                           }}
@@ -385,7 +436,6 @@ class Post extends Component {
                       </div>
                     </div>
                   )}
-                  {/* Video duration indicator */}
                   <div className="post__video-duration">
                     <FitScreenIcon style={{ fontSize: '20px' }} />
                   </div>
@@ -477,12 +527,70 @@ class Post extends Component {
     );
   }
 
+  renderKebabMenu = () => {
+    return (
+      <div className="post__menu-wrapper" ref={this.menuRef} style={{ position: "relative" }}>
+        <div
+          className="post__menu-icon"
+          style={{ position: "absolute", top: 0, right: 0, cursor: "pointer", zIndex: 2 }}
+          onClick={() => this.setState({ showMenu: !this.state.showMenu })}
+        >
+          <MoreVertIcon />
+        </div>
+        {this.state.showMenu && (
+          <div
+            className="post__menu-dropdown"
+            style={{
+              position: "absolute",
+              top: 28,
+              right: 0,
+              background: "#fff",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              borderRadius: 6,
+              minWidth: 140,
+              zIndex: 10,
+              padding: "8px 0"
+            }}
+          >
+            <div
+              className="post__menu-item"
+              style={{
+                padding: "8px 16px",
+                cursor: this.state.saving ? "not-allowed" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                color: "#333"
+              }}
+              onClick={this.handleSaveToggle}
+            >
+              {this.state.saved ? (
+                <>
+                  <BookmarkIcon style={{ marginRight: 8, color: "#4f46e5" }} />
+                  Unsave Post
+                </>
+              ) : (
+                <>
+                  <BookmarkBorderIcon style={{ marginRight: 8 }} />
+                  Save Post
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   render() {
     return (
-      <div className="post__container" ref={this.postRef}>
-        <div className="post__header">
-          <Avatar className="post__image" src={this.props.profileImage} />
-          <div className="post__username">{this.props.userName}</div>
+      <div className="post__container" ref={this.postRef} style={{ position: "relative" }}>
+        {/* Header with kebab menu */}
+        <div className="post__header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Avatar className="post__image" src={this.props.profileImage} />
+            <div className="post__username">{this.props.userName}</div>
+          </div>
+          {this.renderKebabMenu()}
         </div>
         
         {this.renderMediaGrid()}
@@ -511,10 +619,8 @@ class Post extends Component {
           </span> {this.props.caption}
         </div>
 
-        
         {this.renderHashtags()}
         
-        {/* Moved comments section here, after caption and hashtags */}
         <div className="comments-section">
           {this.state.commentList.slice(0, 3).map((item, index) => (
             <div className="post_comment" key={index}>
@@ -533,7 +639,6 @@ class Post extends Component {
       </div>
     );
   }
-  
 }
 
 export default Post;

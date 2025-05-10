@@ -1,80 +1,216 @@
-import React, { Component } from 'react';
-import './LoginPage.css'
-import Grid from '@mui/material/Grid';
-import inst_image from '../../images/login2.jpg';
+import React, { useState } from 'react';
+import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "../firebase";
+import './LoginPage.css';
 import insta_logo from '../../images/logo2.jpg';
-import fb from '../../images/fb.png';
-import appstore from '../../images/app.png';
-import playstore from '../../images/play.png';
-import SignIN from '../SignIn/SignIN';
-import SignUp from '../SignUp/SignUp';
+import SignInWithGoogle from '../SignIn/SignInWithGoogle';
+import SignInWithGithub from '../SignIn/SignInWithGithub';
 
-class LoginPage extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { 
-            isLogin: true
-         }
-    }
+// SignIn Component as a functional component
+const SignIn = () => {
+  const [credentials, setCredentials] = useState({
+    emailId: '',
+    password: ''
+  });
 
-    changeLogin=()=>{
-        if(this.state.isLogin)
-            this.setState({isLogin: false});
-        else    
-            this.setState({isLogin: true});
-    }
+  const handleChange = (e) => {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value
+    });
+  };
 
-    render() { 
-        return ( 
-            <div>
-                <Grid container>
-                    <Grid item xs={3}>
-                    </Grid>
-                    <Grid item xs={6}>
-                       <div className="loginpage__main">
-                           <div>
-                               <img src={inst_image} width="454px" />
-                           </div>
-                           <div>
-                               <div className="loginpage_rightcomponent">
-                                   <img className="loginpage__logo" src={insta_logo} />
-                                   <div className="loginPage__signin">
+  const login = () => {
+    signInWithEmailAndPassword(auth, credentials.emailId, credentials.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        localStorage.setItem("users", JSON.stringify(user));
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Login error:", error.message);
+        alert(`Login failed: ${error.message}`);
+      });
+  };
 
-                                     {
-                                         this.state.isLogin ? <SignIN/> : <SignUp/>
-                                     }
+  return (
+    <div className="form-container">
+      <div className="input-group">
+        <input
+          className="auth-input"
+          name="emailId"
+          onChange={handleChange}
+          type="text"
+          placeholder="Email or username"
+        />
+      </div>
+      <div className="input-group">
+        <input
+          className="auth-input"
+          name="password"
+          onChange={handleChange}
+          type="password"
+          placeholder="Password"
+        />
+      </div>
+      <button className="auth-button" onClick={login}>
+        Log In
+      </button>
+      <div className="forgot-password">
+        Forgot password?
+      </div>
+    </div>
+  );
+};
 
-                                        <div className="login__ordiv">
-                                            <div className="login__dividor"></div>
-                                        </div>
+// SignUp Component as a functional component
+const SignUp = () => {
+  const [userData, setUserData] = useState({
+    emailId: '',
+    name: '',
+    userName: '',
+    password: ''
+  });
 
-                                        <div className="login_forgt"> Forgot password?</div>
-                                   </div>
-                               </div>
+  const handleChange = (e) => {
+    setUserData({
+      ...userData,
+      [e.target.name]: e.target.value
+    });
+  };
 
-                                <div className="loginpage__signupoption">
-                                    {
-                                        this.state.isLogin ?
-                                        <div className="loginPage__signin">
-                                                 Don't have an account? <span onClick={this.changeLogin} style={{ "fontWeight":"bold", "color":"#0395F6"}}>Sign up</span>
-                                        </div> :
-                                        <div className="loginPage__signup">
-                                                Have an account? <span onClick={this.changeLogin}  style={{ "fontWeight":"bold", "color":"#0395F6"}}>Sign in</span>
-                                        </div>
-                                    }
-                                    
-                                   
-                                </div>
+  const newSignUp = () => {
+    createUserWithEmailAndPassword(auth, userData.emailId, userData.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        const payload = {
+          userId: user.uid,
+          userName: userData.userName,
+          name: userData.name,
+          profileImage: ""
+        };
 
-                           </div>
-                       </div>
-                    </Grid>
-                    <Grid item xs={3}>
-                    </Grid>
-                </Grid>
+        fetch("http://localhost:8080/users", {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+          .then(response => response.json())
+          .then(data => {
+            localStorage.setItem("users", JSON.stringify(user));
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error("Error saving user:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Sign up error:", error.message);
+        alert(`Sign up failed: ${error.message}`);
+      });
+  };
+
+  return (
+    <div className="form-container">
+      <div className="input-group">
+        <input
+          className="auth-input"
+          name="emailId"
+          onChange={handleChange}
+          type="text"
+          placeholder="Email"
+        />
+      </div>
+      <div className="input-group">
+        <input
+          className="auth-input"
+          name="name"
+          onChange={handleChange}
+          type="text"
+          placeholder="Full Name"
+        />
+      </div>
+      <div className="input-group">
+        <input
+          className="auth-input"
+          name="userName"
+          onChange={handleChange}
+          type="text"
+          placeholder="Username"
+        />
+      </div>
+      <div className="input-group">
+        <input
+          className="auth-input"
+          name="password"
+          onChange={handleChange}
+          type="password"
+          placeholder="Password"
+        />
+      </div>
+      <button className="auth-button" onClick={newSignUp}>
+        Sign Up
+      </button>
+    </div>
+  );
+};
+
+// Main LoginPage Component
+const LoginPage = () => {
+  const [isLogin, setIsLogin] = useState(true);
+
+  const toggleAuthMode = () => {
+    setIsLogin(!isLogin);
+  };
+
+  return (
+    <div className="split-container">
+      {/* Left side: Branding */}
+      <div className="split-left">
+        <div className="branding">
+          <h1>SkillShare App</h1>
+          <p>
+            Skip repetitive and manual tasks.<br />
+            Get highly productive through automation<br />
+            and save tons of time!
+          </p>
+        </div>
+      </div>
+      {/* Right side: Login card */}
+      <div className="split-right">
+        <div className="login-card">
+          <div className="auth-header">
+            <img className="auth-logo" src={insta_logo} alt="logo" />
+            <h2>{isLogin ? "Sign in to your account" : "Create an account"}</h2>
+          </div>
+          {isLogin ? <SignIn /> : <SignUp />}
+          <div className="divider">
+            <span>or continue with</span>
+          </div>
+
+          <div className="social-buttons">
+            <button className="social-button google">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/480px-Google_%22G%22_logo.svg.png" alt="" className="social-icon" />
+                Sign in with Google
+            </button>
+            <button className="social-button github">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="" className="social-icon" />
+                Sign in with GitHub
+            </button>
             </div>
-         );
-    }
-}
- 
+
+
+          <div className="auth-footer">
+            <p>
+              {isLogin ? "Don't have an account?" : "Already have an account?"}
+              <button className="toggle-auth" onClick={toggleAuthMode}>
+                {isLogin ? "Sign up" : "Sign in"}
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default LoginPage;

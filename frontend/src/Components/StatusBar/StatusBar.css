@@ -2,12 +2,12 @@
     position: relative;
     width: 100%;
     max-width: 625px;
-    margin-top: 25px;
+    margin-top: 20px;
     margin-left: 160px;
 }
 
 .statusbar__container {
-    height: 200px;
+    height: 210px;
     width: 100%;
     background-color: rgb(255, 255, 255);
     display: flex;

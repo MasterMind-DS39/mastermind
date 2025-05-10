@@ -1,4 +1,3 @@
-// src/Components/UserProfile/PublicProfile.js
 import React, { Component } from 'react';
 import "./Profile.css";
 import Post from "../Post/Post";
@@ -7,6 +6,7 @@ import coverPlaceholder from "../../images/cover-placeholder.jpg";
 import avatarPlaceholder from "../../images/avatar-placeholder.png";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import ChatModal from "../Chat/ChatModal";
 
 function withRouter(Component) {
   return props => {
@@ -23,6 +23,7 @@ class PublicProfile extends Component {
       userData: null,
       posts: [],
       loading: true,
+      chatModalOpen: false
     };
   }
 
@@ -67,32 +68,59 @@ class PublicProfile extends Component {
     }
   }
 
+  openChatModal = () => {
+    this.setState({ chatModalOpen: true });
+  };
+
+  closeChatModal = () => {
+    this.setState({ chatModalOpen: false });
+  };
+
   render() {
-    const { userData, posts, loading } = this.state;
+    const { userData, posts, loading, chatModalOpen } = this.state;
 
     return (
       <div className="profile__page-container">
-        {/* Back button positioned at top left */}
         <div className="profile__back-button-container">
           <Link to="/" className="profile__back-button">
             <ArrowBackIcon />
             <span>Back to Home</span>
           </Link>
         </div>
-
         <div className="profile__container">
           <div className="profile__header">
             <div className="profile__cover">
               <img src={coverPlaceholder} alt="Cover" className="cover-image" />
             </div>
             <div className="profile__info">
-              <Avatar 
-                src={userData?.profileImage || avatarPlaceholder}
+              <Avatar
+                src={avatarPlaceholder}
                 className="profile__avatar"
               />
               <div className="profile__details">
                 <h2 className="profile__username">{userData?.userName || "User"}</h2>
                 <p className="profile__name">{userData?.name || ""}</p>
+                {userData && (
+                  <button
+                    style={{
+                      marginTop: 10,
+                      padding: "8px 16px",
+                      background: "#1976d2",
+                      color: "white",
+                      border: "none",
+                      borderRadius: 4,
+                      cursor: "pointer"
+                    }}
+                    onClick={this.openChatModal}
+                  >
+                    Message
+                  </button>
+                )}
+                <ChatModal
+                  open={chatModalOpen}
+                  onClose={this.closeChatModal}
+                  otherUser={userData}
+                />
               </div>
             </div>
           </div>
@@ -122,7 +150,7 @@ class PublicProfile extends Component {
                         caption={post.caption}
                         hashtags={post.hashtags}
                         likes={post.likeCount}
-                        profileImage={userData?.profileImage || avatarPlaceholder}
+                        profileImage={avatarPlaceholder}
                       />
                     </div>
                   </div>

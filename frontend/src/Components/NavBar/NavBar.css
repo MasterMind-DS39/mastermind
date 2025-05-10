@@ -216,3 +216,45 @@
         flex: 1;
     }
 }
+
+/* Add these styles to your existing NavBar.css file */
+
+.notification-icon {
+    position: relative;
+    cursor: pointer;
+}
+
+.nav-icon.notification-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style for the Badge from Material UI */
+.MuiBadge-badge {
+    background-color: #ed4956;
+    color: white;
+    font-size: 10px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+}
+
+/* Active state for notification icon */
+.nav-icon.notification-icon.active svg {
+    fill: #262626;
+}
+
+/* Default color for notification icon */
+.nav-icon.notification-icon svg {
+    fill: #8e8e8e;
+    width: 24px;
+    height: 24px;
+    transition: fill 0.2s;
+}
+
+/* Hover state for notification icon */
+.nav-icon.notification-icon:hover svg {
+    fill: #262626;
+}
