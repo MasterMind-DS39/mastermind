@@ -135,5 +135,11 @@ public class LearningPlanController {
         return planService.getCompletedPlansByUser(userId);
 }
 
+    //searchLearningPlans
+    @GetMapping("/search")
+    public List<LearningPlan> searchPlans(@RequestParam String query) {
+        return planService.searchPlansByKeyword(query);
+}
+
 
 }

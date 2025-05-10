@@ -9,5 +9,6 @@ public interface LearningPlanRepository extends JpaRepository<LearningPlan, Long
     List<LearningPlan> findByCreatedByUserId(Long userId);
 
     List<LearningPlan> findByStartedByUsers_Id(Long userId);
+    List<LearningPlan> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String title, String description);
 
 }

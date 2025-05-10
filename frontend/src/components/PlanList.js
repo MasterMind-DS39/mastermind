@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import SearchPlans from "./SearchPlans"; // import at the top
 
 function PlanList({ title, endpoint }) {
   const [plans, setPlans] = useState([]);
@@ -91,6 +92,9 @@ function PlanList({ title, endpoint }) {
       >
         {title}
       </h2>
+      <div style={{ marginBottom: "20px" }}>
+        <SearchPlans allPlans={plans} onResults={setPlans} />
+      </div>
       {Array.isArray(plans) && plans.length > 0 ? (
         <ul
           style={{

@@ -225,4 +225,9 @@ public List<Long> getCompletedLessonIds(Long userId, Long planId) {
 
         userRepository.save(user);
     }
+
+    //searchLearningPlans
+    public List<LearningPlan> searchPlansByKeyword(String query) {
+        return planRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query);
+    }
 }
