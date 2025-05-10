@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastermind</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+        }
+        .main-content {
+            padding: 30px 0;
+            text-align: center;
+        }
+        .api-info {
+            background: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .button {
+            display: inline-block;
+            background: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Mastermind API</h1>
+        </div>
+    </header>
+
+    <div class="main-content container">
+        <h2>Welcome to the Mastermind API Service</h2>
+        <p>This is the backend API service for the Mastermind application.</p>
+        
+        <div class="api-info">
+            <h3>API Status: Active</h3>
+            <p>The API is up and running. You can access the following resources:</p>
+            <ul style="list-style-type: none; padding: 0;">
+                <li>/api/skills - Skills management</li>
+                <li>/api/categories - Category management</li>
+                <!-- Add more API endpoints here -->
+            </ul>
+        </div>
+        
+        <a href="/api/skills" class="button">Explore Skills API</a>
+        <a href="/api/categories" class="button">Explore Categories API</a>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Mastermind. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
