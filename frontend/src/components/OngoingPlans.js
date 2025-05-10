@@ -63,14 +63,14 @@ function OngoingPlans() {
     );
   };
 
-  const handleCompletionToggle = (lessonId, isCompleted) => {
+  /*  const handleCompletionToggle = (lessonId, isCompleted) => {
     axios
       .put(`http://localhost:8080/api/lessons/${lessonId}/complete`, {
         completed: isCompleted,
       })
       .then(() => fetchPlans())
       .catch((err) => console.error(err));
-  };
+  }; */
 
   return (
     <div style={{ padding: "30px", fontFamily: "Segoe UI, sans-serif" }}>
