@@ -73,85 +73,161 @@ function PlanList({ title, endpoint }) {
     <div
       style={{
         padding: "30px",
-        fontFamily: "Segoe UI, sans-serif",
-        backgroundColor: "#e9ebee",
+        fontFamily: "'Poppins', sans-serif",
+        backgroundColor: "#f9fafc",
+        minHeight: "100vh",
       }}
     >
       <h2
         style={{
-          color: "#1877f2",
-          borderBottom: "2px solid #1877f2",
+          color: "#4a90e2",
+          borderBottom: "4px solid #4a90e2",
           paddingBottom: "10px",
-          marginBottom: "20px",
+          marginBottom: "30px",
+          textAlign: "center",
+          fontSize: "32px",
+          fontWeight: "600",
         }}
       >
         {title}
       </h2>
       {Array.isArray(plans) && plans.length > 0 ? (
-        <ul style={{ listStyleType: "none", padding: 0 }}>
+        <ul
+          style={{
+            listStyleType: "none",
+            padding: 0,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "25px",
+          }}
+        >
           {plans.map((plan) => (
             <li
               key={plan.id}
               style={{
-                backgroundColor: "#fff",
-                margin: "15px 0",
+                backgroundColor: "#ffffff",
                 padding: "20px",
-                borderRadius: "10px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                transition: "transform 0.2s",
+                borderRadius: "16px",
+                boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
+                transition: "transform 0.3s, box-shadow 0.3s",
+                cursor: "pointer",
+                overflow: "hidden",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = "scale(1.05)";
+                e.currentTarget.style.boxShadow =
+                  "0 12px 24px rgba(0, 0, 0, 0.2)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow =
+                  "0 8px 20px rgba(0, 0, 0, 0.1)";
               }}
             >
               <Link
                 to={`/plans/${plan.id}`}
                 style={{
-                  fontSize: "20px",
-                  fontWeight: "bold",
+                  fontSize: "24px",
+                  fontWeight: "600",
                   textDecoration: "none",
-                  color: "#1877f2",
+                  color: "#4a90e2",
                   display: "block",
-                  marginBottom: "10px",
+                  marginBottom: "12px",
+                  transition: "color 0.3s",
                 }}
-                onMouseOver={(e) =>
-                  (e.target.style.textDecoration = "underline")
-                }
-                onMouseOut={(e) => (e.target.style.textDecoration = "none")}
+                onMouseOver={(e) => (e.target.style.color = "#357ab8")}
+                onMouseOut={(e) => (e.target.style.color = "#4a90e2")}
               >
                 {plan.title}
               </Link>
-              <p style={{ margin: "8px 0", color: "#444" }}>
+              <p
+                style={{
+                  margin: "10px 0",
+                  color: "#6b7280",
+                  fontSize: "16px",
+                  lineHeight: "1.6",
+                }}
+              >
                 {plan.description}
               </p>
-              <p style={{ margin: "4px 0", fontSize: "14px", color: "#777" }}>
+              <p
+                style={{
+                  margin: "6px 0",
+                  fontSize: "14px",
+                  color: "#9ca3af",
+                  fontStyle: "italic",
+                }}
+              >
                 Created by: {plan.createdBy}
               </p>
-              <p style={{ margin: "4px 0", fontSize: "14px", color: "#777" }}>
-                Upvotes: {plan.upvotes}
-              </p>
-              <button
-                onClick={() => handleUpvote(plan.id)}
+              <div
                 style={{
-                  backgroundColor: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: "20px",
-                  color: userUpvotedPlans.includes(plan.id)
-                    ? "#1877f2"
-                    : "#ccc",
-                  marginLeft: "5px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: "15px",
                 }}
-                title={
-                  userUpvotedPlans.includes(plan.id)
-                    ? "Remove upvote"
-                    : "Upvote"
-                }
               >
-                ⬆
-              </button>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "14px",
+                    color: "#6b7280",
+                  }}
+                >
+                  Upvotes: {plan.upvotes}
+                </p>
+                <button
+                  onClick={() => handleUpvote(plan.id)}
+                  style={{
+                    backgroundColor: userUpvotedPlans.includes(plan.id)
+                      ? "#4a90e2"
+                      : "#e5e7eb",
+                    border: "none",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    fontSize: "18px",
+                    color: userUpvotedPlans.includes(plan.id)
+                      ? "#ffffff"
+                      : "#6b7280",
+                    width: "45px",
+                    height: "45px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "background-color 0.3s, color 0.3s",
+                  }}
+                  title={
+                    userUpvotedPlans.includes(plan.id)
+                      ? "Remove upvote"
+                      : "Upvote"
+                  }
+                  onMouseOver={(e) => {
+                    if (!userUpvotedPlans.includes(plan.id)) {
+                      e.currentTarget.style.backgroundColor = "#d1d5db";
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (!userUpvotedPlans.includes(plan.id)) {
+                      e.currentTarget.style.backgroundColor = "#e5e7eb";
+                    }
+                  }}
+                >
+                  ⬆
+                </button>
+              </div>
             </li>
           ))}
         </ul>
       ) : (
-        <p style={{ fontSize: "16px", color: "#606770" }}>
+        <p
+          style={{
+            fontSize: "20px",
+            color: "#9ca3af",
+            textAlign: "center",
+            marginTop: "50px",
+          }}
+        >
           No learning plans available.
         </p>
       )}

@@ -76,17 +76,18 @@ function OngoingPlans() {
     <div style={{ padding: "30px", fontFamily: "Segoe UI, sans-serif" }}>
       <h2
         style={{
-          color: "#1877f2",
-          fontSize: "28px",
+          color: "#4A90E2",
+          fontSize: "32px",
           marginBottom: "30px",
           textAlign: "center",
+          fontWeight: "bold",
         }}
       >
         📘 Ongoing Learning Plans
       </h2>
       {plans.length === 0 ? (
-        <p style={{ textAlign: "center", color: "#777" }}>
-          No ongoing plans found.
+        <p style={{ textAlign: "center", color: "#999", fontSize: "18px" }}>
+          No ongoing plans found. Start your learning journey today!
         </p>
       ) : (
         plans.map((plan) => (
@@ -96,23 +97,47 @@ function OngoingPlans() {
             style={{
               cursor: "pointer",
               border: "1px solid #ddd",
-              borderRadius: "12px",
+              borderRadius: "16px",
               marginBottom: "25px",
               padding: "25px",
-              backgroundColor: "#ffffff",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
+              backgroundColor: "#f9f9f9",
+              boxShadow: "0 6px 15px rgba(0, 0, 0, 0.1)",
+              transition: "transform 0.2s, box-shadow 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.02)";
+              e.currentTarget.style.boxShadow =
+                "0 8px 20px rgba(0, 0, 0, 0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 6px 15px rgba(0, 0, 0, 0.1)";
             }}
           >
-            <h3 style={{ color: "#333", fontSize: "22px" }}>{plan.title}</h3>
-            <p style={{ color: "#555" }}>{plan.description}</p>
+            <h3
+              style={{
+                color: "#333",
+                fontSize: "24px",
+                fontWeight: "600",
+                marginBottom: "10px",
+              }}
+            >
+              {plan.title}
+            </h3>
+            <p
+              style={{ color: "#555", fontSize: "16px", marginBottom: "20px" }}
+            >
+              {plan.description}
+            </p>
 
             <div
               style={{
-                background: "linear-gradient(to right, #e0eafc, #cfdef3)",
-                borderRadius: "6px",
-                height: "24px",
-                marginBottom: "12px",
+                background: "#e6f7ff",
+                borderRadius: "8px",
+                height: "28px",
+                marginBottom: "15px",
                 overflow: "hidden",
+                position: "relative",
               }}
             >
               <div
@@ -122,19 +147,29 @@ function OngoingPlans() {
                   height: "100%",
                   textAlign: "center",
                   color: "white",
-                  lineHeight: "24px",
+                  lineHeight: "28px",
                   fontWeight: "bold",
                   transition: "width 0.4s ease",
                   boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.2)",
+                  borderRadius: "8px 0 0 8px",
                 }}
               >
                 {calculateProgress(plan)}%
               </div>
             </div>
 
-            <p style={{ fontWeight: "bold", color: "#1877f2" }}>
+            <p
+              style={{
+                fontWeight: "bold",
+                color: "#4A90E2",
+                fontSize: "16px",
+                marginTop: "10px",
+              }}
+            >
               📌 Next Task:{" "}
-              <span style={{ color: "#000" }}>{getNextLesson(plan)}</span>
+              <span style={{ color: "#000", fontWeight: "normal" }}>
+                {getNextLesson(plan)}
+              </span>
             </p>
           </div>
         ))
