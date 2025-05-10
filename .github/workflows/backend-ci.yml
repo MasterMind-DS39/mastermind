@@ -42,8 +42,9 @@ jobs:
     - name: Wait for MySQL to be ready
       run: sleep 20
 
-    - name: Create application.properties
+    - name: Ensure resources directory and create application.properties
       run: |
+        mkdir -p backend/src/main/resources
         echo "spring.datasource.url=jdbc:mysql://localhost:3306/testdb" >> backend/src/main/resources/application.properties
         echo "spring.datasource.username=testuser" >> backend/src/main/resources/application.properties
         echo "spring.datasource.password=testpass" >> backend/src/main/resources/application.properties
