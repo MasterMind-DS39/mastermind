@@ -89,14 +89,14 @@ public class LearningPlanController {
 //LearningPlanProgress
     @PutMapping("/progress")
     public ResponseEntity<?> updateLessonProgress(@RequestParam Long userId, @RequestParam Long lessonId, @RequestParam boolean completed) {
-    planService.markLessonCompleted(userId, lessonId, completed);
-    return ResponseEntity.ok().build();
+        planService.markLessonCompleted(userId, lessonId, completed);
+        return ResponseEntity.ok().build();
 }
 
     //getLearningPlansUpvotedByUser
     @GetMapping("/user/{userId}/upvoted-plans")
     public List<LearningPlan> getUpvotedPlansByUser(@PathVariable Long userId) {
-    return planService.getUpvotedPlansByUser(userId);
+        return planService.getUpvotedPlansByUser(userId);
 }
 
     //learningPlanProgressGetting
