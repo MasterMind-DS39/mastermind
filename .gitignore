@@ -48,3 +48,6 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar" > .gitignore
+
+# properties
+backend/src/main/resources/application.properties
